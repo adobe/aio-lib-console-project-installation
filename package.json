@@ -1,0 +1,39 @@
+{
+    "name": "@adobe/aio-lib-console-project-installation",
+    "version": "1.0.0",
+    "description": "A library to configure Adobe Console Projects from a file.",
+    "scripts": {
+        "test": "jest --config=./test/jest.config.json",
+        "lint:check": "eslint --ext .js .",
+        "lint:fix": "eslint --ext .js --fix ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/adobe/aio-lib-console-project-installation.git"
+    },
+    "author": "Adobe Inc.",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/adobe/aio-lib-console-project-installation/issues"
+    },
+    "homepage": "https://github.com/adobe/aio-lib-console-project-installation",
+    "dependencies": {
+        "@adobe/aio-lib-core-logging": "^1.2.0",
+        "ajv": "^8.11.0",
+        "axios": "^0.27.2",
+        "fs-extra": "^10.1.0",
+        "hjson": "^3.2.2",
+        "js-yaml": "^4.1.0"
+    },
+    "engines": {
+        "node": "^14 || ^16"
+    },
+    "devDependencies": {
+      "@adobe/eslint-config-aio-lib-config": "^1.4.0",
+        "eslint": "^7.32.0",
+        "eslint-plugin-jest": "^23.20.0",
+        "eslint-plugin-node": "^11.1.0",
+        "jest": "^26.6.3",
+        "nock": "^13.2.4"
+    }
+}

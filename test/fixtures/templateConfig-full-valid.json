@@ -1,0 +1,45 @@
+{
+  "categories": [
+    "ui",
+    "action"
+  ],
+  "extension": {
+    "serviceCode": "dx/excshell/1"
+  },
+  "env": {
+    "envKey1": "envValue1",
+    "envKey2": "envValue2"
+  },
+  "workspaces": [
+    "Staging",
+    "Production"
+  ],
+  "apis": [
+    {
+      "name": "Creative SDK",
+      "code": "CC SDK"
+    },
+    {
+      "name": "Adobe Stock SDK",
+      "code": "StockSDK"
+    }
+  ],
+  "runtime": false,
+  "event": {
+    "consumer": {
+      "type": "some-type",
+      "provider": [
+        "event-type-1",
+        "event-type-2"
+      ]
+    },
+    "provider": {
+      "name": "provider-name",
+      "description": "provider-description",
+      "event-types": [
+        "event-type-1",
+        "event-type-2"
+      ]
+    }
+  }
+}
