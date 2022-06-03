@@ -54,55 +54,9 @@ const templateManager = templateHandler.init(client, installConfigFile)
   }
 ```
 
-## Functions
+{{>main-index~}}
+{{>all-docs~}}
 
-<dl>
-<dt><a href="#validate">validate(configJson)</a> ⇒ <code>object</code></dt>
-<dd><p>Validate the config json</p>
-</dd>
-<dt><a href="#load">load(fileOrBuffer)</a> ⇒ <code>object</code></dt>
-<dd><p>Load a config file</p>
-</dd>
-<dt><a href="#loadAndValidate">loadAndValidate(fileOrBuffer)</a> ⇒ <code>object</code></dt>
-<dd><p>Load and validate a config file</p>
-</dd>
-</dl>
-
-<a name="validate"></a>
-
-## validate(configJson) ⇒ <code>object</code>
-Validate the config json
-
-**Kind**: global function  
-**Returns**: <code>object</code> - with keys valid (boolean) and errors (object). errors is null if no errors  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| configJson | <code>object</code> | the json to validate |
-
-<a name="load"></a>
-
-## load(fileOrBuffer) ⇒ <code>object</code>
-Load a config file
-
-**Kind**: global function  
-**Returns**: <code>object</code> - object with properties `value` and `format`  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fileOrBuffer | <code>string</code> | the path to the config file or a Buffer |
-
-<a name="loadAndValidate"></a>
-
-## loadAndValidate(fileOrBuffer) ⇒ <code>object</code>
-Load and validate a config file
-
-**Kind**: global function  
-**Returns**: <code>object</code> - object with properties `value` and `format`  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fileOrBuffer | <code>string</code> | the path to the config file or a Buffer |
 
 ### Debug Logs
 

@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://adobe.io/schemas/aio/project",
+  "type": "object",
+  "properties": {
+    "categories": {
+      "$ref": "#/definitions/categories"
+    },
+    "extensions": {
+      "$ref": "#/definitions/extensions"
+    },
+    "env": {
+      "$ref": "#/definitions/env"
+    },
+    "workspaces": {
+      "$ref": "#/definitions/workspaces"
+    },
+    "apis": {
+      "$ref": "#/definitions/apis"
+    },
+    "runtime": {
+      "$ref": "#/definitions/runtime"
+    },
+    "event": {
+      "$ref": "#/definitions/event"
+    }
+  },
+  "required": [
+    "categories"
+  ],
+  "definitions": {
+    "categories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "categories#"
+          }
+        ]
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "required": [
+        "serviceCode"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "serviceCode": {
+          "type": "string"
+        }
+      }
+    },
+    "env": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "string"
+        }
+      }
+    },
+    "workspaces": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "apis": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "apis#"
+          }
+        ]
+      }
+    },
+    "runtime": {
+      "type": "boolean"
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^consumer$": {
+          "$ref": "#/definitions/consumer"
+        },
+        "^provider$": {
+          "$ref": "#/definitions/provider"
+        }
+      }
+    },
+    "consumer": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "provider": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "event-types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
