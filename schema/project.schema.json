@@ -41,17 +41,17 @@
       }
     },
     "extensions": {
-      "type": "object",
-      "required": [
-        "serviceCode"
-      ],
-      "additionalProperties": true,
-      "properties": {
-        "serviceCode": {
-          "type": "string"
-        }
-      }
+      "type": "array",
+      "items": { "$ref": "#/definitions/extension" },
+      "default": []
     },
+    "extension": {
+      "type": "object",
+      "properties": {
+          "extensionPointId": { "type": "string" }
+      },
+      "required": [ "extensionPointId" ]
+    },    
     "env": {
       "type": "object",
       "patternProperties": {

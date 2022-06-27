@@ -29,7 +29,7 @@
         "node": "^14 || ^16"
     },
     "devDependencies": {
-      "@adobe/eslint-config-aio-lib-config": "^1.4.0",
+        "@adobe/eslint-config-aio-lib-config": "^1.4.0",
         "eslint": "^7.32.0",
         "eslint-plugin-jest": "^23.20.0",
         "eslint-plugin-node": "^11.1.0",

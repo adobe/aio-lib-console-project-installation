@@ -3,9 +3,9 @@
     "ui",
     "action"
   ],
-  "extension": {
-    "serviceCode": "dx/excshell/1"
-  },
+  "extensions": [
+    { "extensionPointId": "dx/excshell/1" }
+  ],
   "env": {
     "envKey1": "envValue1",
     "envKey2": "envValue2"

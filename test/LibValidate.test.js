@@ -35,7 +35,7 @@ describe('LibValidate', () => {
 
   test('Successfully validate a YAML installation configuration file: Full example', async () => {
     const configurationValidation = LibValidate.loadAndValidateConfigFile(__dirname + '/fixtures/templateConfig-full-valid.yaml');
-    expectedOutput = JSON.parse('{"format":"yaml","values":{"categories":["ui","action"],"extension":{"serviceCode":"dx/excshell/1"},"env":{"envKey1":"envValue1","envKey2":"envValue2"},"workspaces":["Staging","Production"],"apis":[{"code":"CC SDK","name":"Creative SDK"},{"code":"StockSDK","name":"Adobe Stock SDK"}],"runtime":false,"event":{"consumer":{"type":"some-type","provider":["event-type-1","event-type-2"]},"provider":{"name":"provider-name","description":"provider-description","event-types":["event-type-1","event-type-2"]}}}}')
+    expectedOutput = JSON.parse('{"format":"yaml","values":{"categories":["ui","action"],"extensions":[{"extensionPointId":"dx/excshell/1"}],"env":{"envKey1":"envValue1","envKey2":"envValue2"},"workspaces":["Staging","Production"],"apis":[{"code":"CC SDK","name":"Creative SDK"},{"code":"StockSDK","name":"Adobe Stock SDK"}],"runtime":false,"event":{"consumer":{"type":"some-type","provider":["event-type-1","event-type-2"]},"provider":{"name":"provider-name","description":"provider-description","event-types":["event-type-1","event-type-2"]}}}}')
     expect(configurationValidation).toEqual(expectedOutput);
   });
 
