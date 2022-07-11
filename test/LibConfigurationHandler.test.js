@@ -22,14 +22,12 @@ describe('LibConfigurationHandler', () => {
   test('Successfully validate a JSON installation configuration file: Full example', async () => {
     const jsonConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '/fixtures/templateConfig-full-valid.json')))
     const templateConfiguration = LibConfigurationHandler.validate(jsonConfig)
-    console.log(templateConfiguration)
     expect(templateConfiguration.valid).toEqual(true)
   })
 
   test('Successfully validate a JSON installation configuration file: Minimum example', async () => {
     const jsonConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.json')))
     const templateConfiguration = LibConfigurationHandler.validate(jsonConfig)
-    console.log(templateConfiguration)
     expect(templateConfiguration.valid).toEqual(true)
   })
 
@@ -42,6 +40,46 @@ describe('LibConfigurationHandler', () => {
   test('Successfully validate a YAML installation configuration file: Minimum example', async () => {
     const templateConfiguration = LibConfigurationHandler.loadAndValidate(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
     const expectedOutput = JSON.parse('{"format":"yaml","values":{"categories":["ui"]}}')
+    expect(templateConfiguration).toEqual(expectedOutput)
+  })
+
+  test('Unsuccessfully validate a JSON installation configuration file: Minimum example', async () => {
+    const fixturePath = path.join(__dirname, '/fixtures/templateConfig-minimum-invalid.json')
+    expect(() => {
+      LibConfigurationHandler.load(fixturePath)
+    }).toThrow()
+  })
+
+  test('Unsuccessfully validate a YAML installation configuration file: Minimum example', async () => {
+    const fixturePath = path.join(__dirname, '/fixtures/templateConfig-minimum-invalid.yaml')
+    expect(() => {
+      LibConfigurationHandler.load(fixturePath)
+    }).toThrow()
+  })
+
+  test('Successfully validate an empty YAML installation configuration file', async () => {
+    const templateConfiguration = LibConfigurationHandler.load(path.join(__dirname, '/fixtures/templateConfig-empty.yaml'))
+    const expectedOutput = JSON.parse('{ "values": {}, "format": "json" }')
+    expect(templateConfiguration).toEqual(expectedOutput)
+  })
+
+  test('Unsuccessfully validate a YAML installation configuration file with invalid keys', async () => {
+    const fixturePath = path.join(__dirname, '/fixtures/templateConfig-minimum-invalid-keys.yaml')
+    expect(() => {
+      LibConfigurationHandler.loadAndValidate(fixturePath)
+    }).toThrow()
+  })
+
+  test('Successfully validate a Buffer JSON installation configuration file: Minimum example', async () => {
+    const buffer = Buffer.from('{}', 'utf-8')
+    const templateConfiguration = LibConfigurationHandler.load(buffer)
+    const expectedOutput = JSON.parse('{ "values": {}, "format": "json" }')
+    expect(templateConfiguration).toEqual(expectedOutput)
+  })
+
+  test('Successfully validate an empty JSON installation configuration file: Minimum example', async () => {
+    const templateConfiguration = LibConfigurationHandler.load()
+    const expectedOutput = JSON.parse('{ "values": {}, "format": "json" }')
     expect(templateConfiguration).toEqual(expectedOutput)
   })
 })

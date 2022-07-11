@@ -10,7 +10,8 @@ governing permissions and limitations under the License.
 */
 
 const fs = require('fs')
-const { CoreConsoleAPI } = require('@adobe/aio-lib-console')
+const sdk = require('@adobe/aio-lib-console')
+const env = require('@adobe/aio-lib-env')
 const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-templates:index', { level: process.env.LOG_LEVEL })
 const TemplateInstallManager = require('./TemplateInstallManager.js')
 const configurationHandler = require('./lib/configuration-handler')
@@ -18,22 +19,26 @@ const configurationHandler = require('./lib/configuration-handler')
 /**
  * Returns a new TemplateInstallManager object.
  *
- * @param {CoreConsoleAPI} consoleClient The Adobe Console API client.
+ * @param {string} accessToken The Adobe Console API client.
  * @param {string} templateConfigurationFile The path to the configuration file.
  * @returns {TemplateInstallManager} A new TemplateInstallManager object.
  */
-function init (consoleClient, templateConfigurationFile) {
+async function init (accessToken, templateConfigurationFile) {
   logger.debug('Initializing a new TemplateInstallManager object.')
 
+  // Initialize the Console SDK
+  const apiKey = env.getCliEnv() === 'prod' ? 'aio-cli-console-auth' : 'aio-cli-console-auth-stage'
+  const consoleClient = await sdk.init(accessToken, apiKey)
+
   // Check if the configuration file exists
-  fs.statSync(templateConfigurationFile, (error, stats) => {
-    if (error) {
-      logger.debug(error.message)
-      throw error
-    } else if (stats.isDirectory()) {
-      throw new Error('Could not load the template configuration. The provided path is a directory.')
+  try {
+    const fileStats = fs.statSync(templateConfigurationFile)
+    if (!fileStats.isFile()) {
+      throw new Error(`The configuration file ${templateConfigurationFile} does not exist.`)
     }
-  })
+  } catch (error) {
+    throw new Error(`The configuration file path ${templateConfigurationFile} is not a valid file.`)
+  }
 
   // Load and validate the configuration file
   const templateConfiguration = configurationHandler.loadAndValidate(templateConfigurationFile)

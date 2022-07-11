@@ -13,11 +13,11 @@ const path = require('path')
 const { CLI } = require('@adobe/aio-lib-ims/src/context')
 const { expect, describe, test, beforeEach } = require('@jest/globals')
 const { getToken } = require('@adobe/aio-lib-ims')
-const apiKey = 'aio-cli-console-auth'
-const sdk = require('@adobe/aio-lib-console')
 const templateHandler = require('../src')
 const TemplateInstallManager = require('../src/TemplateInstallManager')
-
+jest.mock('@adobe/aio-lib-ims', () => ({
+  getToken: jest.fn().mockResolvedValue('mock-access-token')
+}))
 beforeEach(() => {
   jest.clearAllMocks()
 })
@@ -26,10 +26,37 @@ describe('index', () => {
   test('Successfully instantiate library', async () => {
     // Instantiate Adobe Developer Console SDK
     const accessToken = await getToken(CLI)
-    const client = await sdk.init(accessToken, apiKey)
 
     // Instantiate App Builder Template Manager
-    const templateManager = templateHandler.init(client, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
     expect(templateManager).toBeInstanceOf(TemplateInstallManager)
+  })
+
+  test('Successfully instantiate library for stage', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+    process.env.AIO_CLI_ENV = 'stage'
+
+    // Instantiate App Builder Template Manager
+    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+    expect(templateManager).toBeInstanceOf(TemplateInstallManager)
+  })
+
+  test('Config file path does not exist', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Instantiate App Builder Template Manager
+    const fixturePath = path.join(__dirname, '/fixtures/file-does-not-exist.yaml')
+    await expect(templateHandler.init(accessToken, fixturePath)).rejects.toThrow()
+  })
+
+  test('Config file path is a directory', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Instantiate App Builder Template Manager
+    const fixturePath = path.join(__dirname, '/fixtures/')
+    await expect(templateHandler.init(accessToken, fixturePath)).rejects.toThrow()
   })
 })

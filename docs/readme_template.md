@@ -26,17 +26,14 @@ $ npm install @adobe/aio-lib-console-project-installation
 ```javascript
 const { getToken } = require('@adobe/aio-lib-ims')
 const { CLI } = require('@adobe/aio-lib-ims/src/context')
-const sdk = require('@adobe/aio-lib-console')
 const templateHandler = require('@adobe/aio-lib-console-project-installation')
 
 // Instantiate Adobe Developer Console SDK
 const accessToken = await getToken(CLI)
-const apiKey = 'aio-cli-console-auth'
-const client = await sdk.init(accessToken, apiKey)
 
 // Instantiate App Builder Template Manager
 const installConfigFile = 'install.yml'
-const templateManager = templateHandler.init(client, installConfigFile)
+const templateManager = await templateHandler.init(accessToken, installConfigFile)
 ```
 
 2) Call methods using the initialized Template Manager
