@@ -5,8 +5,8 @@ categories:
   - action
 workspaces:
 - Development
-extension:
-  serviceCode: dx/asset-compute/worker/1
+extensions:
+- extensionPointId: dx/asset-compute/worker/1
 apis:
 - code: AssetComputeSDK # McDataServicesSdk
 runtime: true
