@@ -3,8 +3,8 @@ $schema: http://json-schema.org/draft-07/schema
 $id: https://adobe.io/schemas/app-builder-templates/1
 categories:
   - action
-extension:
-  serviceCode: dx/asset-compute/worker/1
+extensions:
+- extensionPointId: dx/asset-compute/worker/1
 apis:
 - code: AssetComputeSDK # McDataServicesSdk
 runtime: true

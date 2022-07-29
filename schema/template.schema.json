@@ -41,16 +41,23 @@
       }
     },
     "extensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/extension"
+      }
+    },
+    "extension": {
       "type": "object",
-      "required": [
-        "serviceCode"
-      ],
-      "additionalProperties": true,
       "properties": {
-        "serviceCode": {
+        "extensionPointId": {
           "type": "string"
         }
-      }
+      },
+      "additionalProperties": true,
+      "required": [
+        "extensionPointId"
+      ]
     },
     "env": {
       "type": "object",
