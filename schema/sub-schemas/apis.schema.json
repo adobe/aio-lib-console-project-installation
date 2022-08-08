@@ -5,6 +5,7 @@
   "required": [
     "code"
   ],
+  "additionalProperties": true,
   "properties": {
     "code": {
       "type": "string",

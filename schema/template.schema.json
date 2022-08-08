@@ -28,16 +28,13 @@
   "required": [
     "categories"
   ],
+  "additionalProperties": false,
   "definitions": {
     "categories": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "anyOf": [
-          {
-            "$ref": "categories/1#"
-          }
-        ]
+        "$ref": "categories/1#"
       }
     },
     "extensions": {
@@ -76,11 +73,7 @@
     "apis": {
       "type": "array",
       "items": {
-        "anyOf": [
-          {
-            "$ref": "apis/1#"
-          }
-        ]
+        "$ref": "apis/1#"
       }
     },
     "runtime": {
