@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://adobe.io/schemas/aio/project",
+  "$id": "https://adobe.io/schemas/app-builder-templates/installation-schema/1",
   "type": "object",
   "properties": {
     "categories": {
@@ -35,7 +35,7 @@
       "items": {
         "anyOf": [
           {
-            "$ref": "categories#"
+            "$ref": "categories/1#"
           }
         ]
       }
@@ -78,7 +78,7 @@
       "items": {
         "anyOf": [
           {
-            "$ref": "apis#"
+            "$ref": "apis/1#"
           }
         ]
       }

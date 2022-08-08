@@ -54,8 +54,6 @@ class TemplateInstallManager {
     if (apis) {
       await this.configureAPIs(orgId, projectId, apis)
     }
-
-    return 'done'
   }
 
   /**

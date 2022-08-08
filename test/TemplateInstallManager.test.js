@@ -70,8 +70,8 @@ describe('TemplateInstallManager', () => {
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    const templateSuccess = await templateManager.installTemplate('343284', '4566206088344794932')
-    expect(templateSuccess).toEqual('done')
+    expect.assertions(1)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
   })
 
   test('Successfully install a template, minimum config', async () => {
@@ -82,8 +82,8 @@ describe('TemplateInstallManager', () => {
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    const templateSuccess = await templateManager.installTemplate('343284', '4566206088344794932')
-    expect(templateSuccess).toEqual('done')
+    expect.assertions(1)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
   })
 
   test('Successfully install a template, no credentials', async () => {
@@ -98,8 +98,8 @@ describe('TemplateInstallManager', () => {
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-no-runtime.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    const templateSuccess = await templateManager.installTemplate('343284', '4566206088344794932')
-    expect(templateSuccess).toEqual('done')
+    expect.assertions(1)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
   })
 
   test('Successfully install a template with configured workspaces', async () => {
@@ -110,8 +110,8 @@ describe('TemplateInstallManager', () => {
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-workspaces.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    const templateSuccess = await templateManager.installTemplate('343284', '4566206088344794932')
-    expect(templateSuccess).toEqual('done')
+    expect.assertions(1)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
   })
 
   test('Successfully install a template with runtime disabled', async () => {
@@ -122,8 +122,8 @@ describe('TemplateInstallManager', () => {
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-runtime.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    const templateSuccess = await templateManager.installTemplate('343284', '4566206088344794932')
-    expect(templateSuccess).toEqual('done')
+    expect.assertions(1)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
   })
 
   test('Try to install a template with missing service code', async () => {
