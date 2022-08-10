@@ -3,6 +3,12 @@
   "$id": "https://adobe.io/schemas/app-builder-templates/installation-schema/1",
   "type": "object",
   "properties": {
+    "$schema": {
+      "$ref": "#/definitions/$schema"
+    },
+    "$id": {
+      "$ref": "#/definitions/$id"
+    },
     "categories": {
       "$ref": "#/definitions/categories"
     },
@@ -26,10 +32,18 @@
     }
   },
   "required": [
+    "$schema",
+    "$id",
     "categories"
   ],
   "additionalProperties": false,
   "definitions": {
+    "$schema": {
+      "type": "string"
+    },
+    "$id": {
+      "type": "string"
+    },
     "categories": {
       "type": "array",
       "minItems": 1,
