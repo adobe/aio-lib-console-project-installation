@@ -87,7 +87,15 @@
     "apis": {
       "type": "array",
       "items": {
-        "$ref": "apis/1#"
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
       }
     },
     "runtime": {
