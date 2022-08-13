@@ -3,7 +3,7 @@
     "version": "2.0.1",
     "description": "A library to configure Adobe Console Projects from a file.",
     "scripts": {
-        "test": "jest --ci",
+        "test": "npm run lint:check && jest --ci",
         "lint:check": "eslint --ext .js .",
         "lint:fix": "eslint --ext .js --fix .",
         "jsdoc": "jsdoc2md -t ./docs/readme_template.md src/**/*.js > README.md"

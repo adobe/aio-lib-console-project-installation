@@ -126,6 +126,17 @@ describe('TemplateInstallManager', () => {
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
   })
 
+  test('Try to install a template with an unsupported service type', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Instantiate App Builder Template Manager
+    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-unsupported-service-type.yaml'))
+
+    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Unsupported service type, "unsupported_type". Supported service types are: entp,adobeid,analytics.')
+  })
+
   test('Try to install a template with missing service code', async () => {
     // Instantiate Adobe Developer Console SDK
     const accessToken = await getToken(CLI)

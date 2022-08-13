@@ -319,6 +319,20 @@ const services = [
     atlasDefaultPlanCode: null,
     properties: null,
     requiresApproval: false
+  },
+  {
+    name: 'Unsupported SDK',
+    code: 'UnsupportedSDK',
+    enabled: true,
+    type: 'unsupported_type',
+    platformList: null,
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
   }
 ]
 
