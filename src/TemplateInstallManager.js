@@ -141,9 +141,11 @@ class TemplateInstallManager {
               break
             }
             case SERVICE_TYPE_ADOBEID: {
+              await this.onboardAdobeIdApi(orgId, projectId, workspaceId, service)
               break
             }
             case SERVICE_TYPE_ANALYTICS: {
+              await this.onboardAnalyticsApi(orgId, projectId, workspaceId, service)
               break
             }
             default: {
@@ -179,7 +181,34 @@ class TemplateInstallManager {
   }
 
   /**
+   * Onboards an AdobeId API to the workspace.
+   *
+   * @private
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {string} projectId The ID of the project to configure the APIs for.
+   * @param {string} workspaceId The ID of the workspace to configure the APIs for.
+   * @param {object} service The service info.
+   * @returns {Promise<void>} A promise that resolves when the AdobeId API is onboarded.
+   */
+  async onboardAdobeIdApi (orgId, projectId, workspaceId, service) {
+  }
+
+  /**
+   * Onboards an Analytics API to the workspace.
+   *
+   * @private
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {string} projectId The ID of the project to configure the APIs for.
+   * @param {string} workspaceId The ID of the workspace to configure the APIs for.
+   * @param {object} service The service info.
+   * @returns {Promise<void>} A promise that resolves when the Analytics API is onboarded.
+   */
+  async onboardAnalyticsApi (orgId, projectId, workspaceId, service) {
+  }
+
+  /**
    * Get enterprise credentials for the workspace.
+   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
@@ -206,11 +235,12 @@ class TemplateInstallManager {
   }
 
   /**
-     * Get Service Info for the Organization.
-     * @private
-     * @param {object} service The service to get the info for.
-     * @returns {object} The service info.
-     */
+   * Get Service Info for the Organization.
+   *
+   * @private
+   * @param {object} service The service to get the info for.
+   * @returns {object} The service info.
+   */
   getServiceInfo (service) {
     const serviceProperties = [{
       name: service.name,
@@ -235,6 +265,7 @@ class TemplateInstallManager {
 
   /**
    * Subscribe an API to a workspace.
+   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.

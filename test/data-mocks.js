@@ -321,6 +321,40 @@ const services = [
     requiresApproval: false
   },
   {
+    name: 'API Mesh for Adobe Developer App Builder',
+    code: 'GraphQLServiceSDK',
+    enabled: true,
+    type: 'adobeid',
+    platformList: [
+      'apiKey'
+    ],
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
+  },
+  {
+    name: 'Adobe Analytics',
+    code: 'AdobeAnalyticsSDK',
+    enabled: true,
+    type: 'analytics',
+    platformList: [
+      'iOS',
+      'Web',
+      'Android'
+    ],
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
+  },
+  {
     name: 'Unsupported SDK',
     code: 'UnsupportedSDK',
     enabled: true,

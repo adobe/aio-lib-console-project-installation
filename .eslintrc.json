@@ -2,7 +2,7 @@
   "extends": "@adobe/eslint-config-aio-lib-config",
   "settings": {
     "jsdoc": {
-      "ignorePrivate": true,
+      "ignorePrivate": false,
       "check-access": true,
       "check-alignment": true,
       "check-param-names": true,
