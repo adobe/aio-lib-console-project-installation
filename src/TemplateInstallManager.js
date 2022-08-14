@@ -20,6 +20,8 @@ const SERVICE_TYPE_ENTERPRISE = 'entp'
 const SERVICE_TYPE_ADOBEID = 'adobeid'
 const SERVICE_TYPE_ANALYTICS = 'analytics'
 
+const SERVICE_INTEGRATION_TYPE_SERVICE = 'service'
+
 /**
  * This class provides methods to configure Adobe Developer Console Projects from a configuration file.
  */
@@ -174,8 +176,8 @@ class TemplateInstallManager {
    * @returns {Promise<void>} A promise that resolves when the Enterprise API is onboarded.
    */
   async onboardEnterpriseApi (orgId, projectId, workspaceId, service) {
-    const credentialType = 'entp'
-    const credentialId = await this.getWorkspaceEnterpriseCredentials(orgId, projectId, workspaceId, credentialType)
+    const credentialType = SERVICE_TYPE_ENTERPRISE
+    const credentialId = await this.getWorkspaceEnterpriseCredentials(orgId, projectId, workspaceId)
     const serviceInfo = this.getServiceInfo(service)
     await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
   }
@@ -213,13 +215,12 @@ class TemplateInstallManager {
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
    * @param {string} workspaceId The ID of the workspace to get the credentials for.
-   * @param {string} credentialType The type of credential to get. Defaults to 'entp'.
    * @returns {string} The credential ID.
    * @throws {Error} If the credentials cannot be retrieved.
    */
-  async getWorkspaceEnterpriseCredentials (orgId, projectId, workspaceId, credentialType) {
+  async getWorkspaceEnterpriseCredentials (orgId, projectId, workspaceId) {
     const credentials = (await this.sdkClient.getCredentials(orgId, projectId, workspaceId)).body
-    const credential = credentials.find(c => c.flow_type === credentialType && c.integration_type === 'service')
+    const credential = credentials.find(c => c.flow_type === SERVICE_TYPE_ENTERPRISE && c.integration_type === SERVICE_INTEGRATION_TYPE_SERVICE)
     let credentialId = credential && credential.id_integration
     if (!credentialId) {
       const keyPair = cert.generate('aio-lib-console-e2e', 365, { country: 'US', state: 'CA', locality: 'SF', organization: 'Adobe', unit: 'AdobeIO' })
