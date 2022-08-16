@@ -337,24 +337,6 @@ const services = [
     requiresApproval: false
   },
   {
-    name: 'Adobe Analytics',
-    code: 'AdobeAnalyticsSDK',
-    enabled: true,
-    type: 'analytics',
-    platformList: [
-      'iOS',
-      'Web',
-      'Android'
-    ],
-    docsUrl: null,
-    learnMoreUrl: null,
-    description: null,
-    atlasCollectionCode: null,
-    atlasDefaultPlanCode: null,
-    properties: null,
-    requiresApproval: false
-  },
-  {
     name: 'Unsupported SDK',
     code: 'UnsupportedSDK',
     enabled: true,
@@ -441,6 +423,12 @@ const integrations = [
     id_workspace: workspace.id,
     integration_type: 'service',
     flow_type: 'entp'
+  },
+  {
+    id_integration: '44444',
+    id_workspace: workspace.id,
+    integration_type: 'apikey',
+    flow_type: 'adobeid'
   }
 ]
 

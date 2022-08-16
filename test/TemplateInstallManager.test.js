@@ -36,6 +36,7 @@ const mockConsoleSDKInstance = {
   getSDKProperties: jest.fn(),
   getIntegration: jest.fn(),
   createEnterpriseCredential: jest.fn(),
+  createAdobeIdCredential: jest.fn(),
   getCredentials: jest.fn(),
   getEndPointsInWorkspace: jest.fn(),
   updateEndPointsInWorkspace: jest.fn(),
@@ -58,6 +59,7 @@ beforeEach(async () => {
   mockConsoleSDKInstance.createRuntimeNamespace.mockResolvedValue({ body: dataMocks.runtimeNamespace })
   mockConsoleSDKInstance.createWorkspace.mockResolvedValue({ body: dataMocks.workspace })
   mockConsoleSDKInstance.createEnterpriseCredential.mockResolvedValue({ body: dataMocks.integrationCreateResponse })
+  mockConsoleSDKInstance.createAdobeIdCredential.mockResolvedValue({ body: dataMocks.integrationCreateResponse })
   mockConsoleSDKInstance.subscribeCredentialToServices.mockResolvedValue({ body: dataMocks.subscribeServicesResponse })
 })
 
@@ -133,17 +135,8 @@ describe('TemplateInstallManager', () => {
     // Instantiate App Builder Template Manager
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-adobeid.yaml'))
 
-    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    expect.assertions(1)
-    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
-  })
-
-  test('Successfully install a template with Analytics API', async () => {
-    // Instantiate Adobe Developer Console SDK
-    const accessToken = await getToken(CLI)
-
-    // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-analytics.yaml'))
+    // covers a case when no adobeid credentials created for a workspace yet
+    mockConsoleSDKInstance.getCredentials.mockResolvedValueOnce({ body: [] })
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
@@ -159,7 +152,7 @@ describe('TemplateInstallManager', () => {
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
-    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Unsupported service type, "unsupported_type". Supported service types are: entp,adobeid,analytics.')
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Unsupported service type, "unsupported_type". Supported service types are: entp,adobeid.')
   })
 
   test('Try to install a template with missing service code', async () => {
