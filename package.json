@@ -1,9 +1,9 @@
 {
     "name": "@adobe/aio-lib-console-project-installation",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "A library to configure Adobe Console Projects from a file.",
     "scripts": {
-        "test": "jest --ci",
+        "test": "npm run lint:check && jest --ci",
         "lint:check": "eslint --ext .js .",
         "lint:fix": "eslint --ext .js --fix .",
         "jsdoc": "jsdoc2md -t ./docs/readme_template.md src/**/*.js > README.md"
@@ -20,7 +20,7 @@
     "homepage": "https://github.com/adobe/aio-lib-console-project-installation",
     "dependencies": {
         "@adobe/aio-cli-plugin-certificate": "^0.4.0",
-        "@adobe/aio-lib-console": "^3.2.0",
+        "@adobe/aio-lib-console": "^3.2.1",
         "@adobe/aio-lib-core-logging": "^1.2.0",
         "@adobe/aio-lib-env": "^1.1.0",
         "@adobe/aio-lib-ims": "^4.3.0",

@@ -1,12 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://adobe.io/schemas/aio/categories",
+  "$id": "https://adobe.io/schemas/app-builder-templates/installation-schema/categories/1",
   "type": "string",
   "enum": [
     "action",
     "ui",
     "graphql-mesh",
     "ci-cd",
-    "events"
+    "events",
+    "helper-template"
   ]
 }

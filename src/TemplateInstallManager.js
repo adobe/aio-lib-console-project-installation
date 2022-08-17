@@ -16,6 +16,15 @@ const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: 
 const fs = require('fs')
 const tmp = require('tmp')
 
+const SERVICE_TYPE_ENTERPRISE = 'entp'
+const SERVICE_TYPE_ADOBEID = 'adobeid'
+
+const SERVICE_INTEGRATION_TYPE_SERVICE = 'service'
+const SERVICE_INTEGRATION_TYPE_APIKEY = 'apikey'
+
+// supported platforms
+const SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY = 'apiKey'
+
 /**
  * This class provides methods to configure Adobe Developer Console Projects from a configuration file.
  */
@@ -54,8 +63,6 @@ class TemplateInstallManager {
     if (apis) {
       await this.configureAPIs(orgId, projectId, apis)
     }
-
-    return 'done'
   }
 
   /**
@@ -126,16 +133,28 @@ class TemplateInstallManager {
     logger.debug(`apis to configure: ${JSON.stringify(apis)}`)
     const orgServices = (await this.sdkClient.getServicesForOrg(orgId)).body
     const currentWorkspaces = (await this.sdkClient.getWorkspacesForProject(orgId, projectId)).body
-    const credentialType = 'entp'
     for (const workspace of currentWorkspaces) {
       const workspaceId = workspace.id
-      const credentialId = await this.getWorkspaceCredentials(orgId, projectId, workspaceId, credentialType)
 
       for (const api of apis) {
         const service = orgServices.find(service => service.code === api.code)
         if (service && service.enabled === true) {
-          const serviceInfo = this.getServiceInfo(service)
-          await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
+          const serviceType = service.type
+          switch (serviceType) {
+            case SERVICE_TYPE_ENTERPRISE: {
+              await this.onboardEnterpriseApi(orgId, projectId, workspaceId, service)
+              break
+            }
+            case SERVICE_TYPE_ADOBEID: {
+              await this.onboardAdobeIdApi(orgId, projectId, workspaceId, service)
+              break
+            }
+            default: {
+              const errorMessage = `Unsupported service type, "${serviceType}". Supported service types are: ${[SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID].join(',')}.`
+              logger.error(errorMessage)
+              throw new Error(errorMessage)
+            }
+          }
         } else {
           const errorMessage = `Service code "${api.code}" not found in the organization.`
           logger.error(errorMessage)
@@ -146,18 +165,52 @@ class TemplateInstallManager {
   }
 
   /**
+   * Onboards an Enterprise API to the workspace.
+   *
+   * @private
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {string} projectId The ID of the project to configure the APIs for.
+   * @param {string} workspaceId The ID of the workspace to configure the APIs for.
+   * @param {object} service The service info.
+   * @returns {Promise<void>} A promise that resolves when the Enterprise API is onboarded.
+   */
+  async onboardEnterpriseApi (orgId, projectId, workspaceId, service) {
+    const credentialType = SERVICE_TYPE_ENTERPRISE
+    const credentialId = await this.getWorkspaceEnterpriseCredentials(orgId, projectId, workspaceId)
+    const serviceInfo = this.getServiceInfo(service)
+    await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
+  }
+
+  /**
+   * Onboards an AdobeId API to the workspace.
+   *
+   * @private
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {string} projectId The ID of the project to configure the APIs for.
+   * @param {string} workspaceId The ID of the workspace to configure the APIs for.
+   * @param {object} service The service info.
+   * @returns {Promise<void>} A promise that resolves when the AdobeId API is onboarded.
+   */
+  async onboardAdobeIdApi (orgId, projectId, workspaceId, service) {
+    const credentialType = SERVICE_TYPE_ADOBEID
+    const credentialId = await this.getWorkspaceAdobeIdCredentials(orgId, projectId, workspaceId)
+    const serviceInfo = this.getServiceInfo(service)
+    await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
+  }
+
+  /**
    * Get enterprise credentials for the workspace.
+   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
    * @param {string} workspaceId The ID of the workspace to get the credentials for.
-   * @param {string} credentialType The type of credential to get. Defaults to 'entp'.
    * @returns {string} The credential ID.
    * @throws {Error} If the credentials cannot be retrieved.
    */
-  async getWorkspaceCredentials (orgId, projectId, workspaceId, credentialType) {
+  async getWorkspaceEnterpriseCredentials (orgId, projectId, workspaceId) {
     const credentials = (await this.sdkClient.getCredentials(orgId, projectId, workspaceId)).body
-    const credential = credentials.find(c => c.flow_type === credentialType && c.integration_type === 'service')
+    const credential = credentials.find(c => c.flow_type === SERVICE_TYPE_ENTERPRISE && c.integration_type === SERVICE_INTEGRATION_TYPE_SERVICE)
     let credentialId = credential && credential.id_integration
     if (!credentialId) {
       const keyPair = cert.generate('aio-lib-console-e2e', 365, { country: 'US', state: 'CA', locality: 'SF', organization: 'Adobe', unit: 'AdobeIO' })
@@ -173,11 +226,38 @@ class TemplateInstallManager {
   }
 
   /**
-     * Get Service Info for the Organization.
-     * @private
-     * @param {object} service The service to get the info for.
-     * @returns {object} The service info.
-     */
+   * Get adobeid credentials for the workspace.
+   *
+   * @private
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {string} projectId The ID of the project to configure the APIs for.
+   * @param {string} workspaceId The ID of the workspace to get the credentials for.
+   * @returns {string} The credential ID.
+   * @throws {Error} If the credentials cannot be retrieved.
+   */
+  async getWorkspaceAdobeIdCredentials (orgId, projectId, workspaceId) {
+    const credentials = (await this.sdkClient.getCredentials(orgId, projectId, workspaceId)).body
+    const credential = credentials.find(c => c.flow_type === SERVICE_TYPE_ADOBEID && c.integration_type === SERVICE_INTEGRATION_TYPE_APIKEY)
+    let credentialId = credential && credential.id_integration
+    if (!credentialId) {
+      const ts = new Date().getTime()
+      // though "redirectUriList" and "defaultRedirectUri" are not needed for the AdobeID APIKEY authorisation mechanism, it is better to provide them to avoid any possible validation issues on the Console side
+      const redirectUriList = ['https://adobe.com']
+      const defaultRedirectUri = 'https://adobe.com'
+      const adobeIdCredential = (await this.sdkClient.createAdobeIdCredential(orgId, projectId, workspaceId, { name: `AdobeId Credentials ${ts}`, description: 'AdobeId Credentials', platform: SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY, redirectUriList, defaultRedirectUri })).body
+      credentialId = adobeIdCredential.id
+    }
+
+    return credentialId
+  }
+
+  /**
+   * Get Service Info for the Organization.
+   *
+   * @private
+   * @param {object} service The service to get the info for.
+   * @returns {object} The service info.
+   */
   getServiceInfo (service) {
     const serviceProperties = [{
       name: service.name,
@@ -202,6 +282,7 @@ class TemplateInstallManager {
 
   /**
    * Subscribe an API to a workspace.
+   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.

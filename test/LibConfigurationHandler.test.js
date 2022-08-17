@@ -33,13 +33,13 @@ describe('LibConfigurationHandler', () => {
 
   test('Successfully validate a YAML installation configuration file: Full example', () => {
     const templateConfiguration = LibConfigurationHandler.loadAndValidate(path.join(__dirname, '/fixtures/templateConfig-full-valid.yaml'))
-    const expectedOutput = JSON.parse('{"format":"yaml","values":{"categories":["ui","action"],"extensions":[{"extensionPointId":"dx/excshell/1"}],"env":{"envKey1":"envValue1","envKey2":"envValue2"},"workspaces":["Stage","Production"],"apis":[{"code":"CC SDK","name":"Creative SDK"},{"code":"StockSDK","name":"Adobe Stock SDK"}],"runtime":false,"event":{"consumer":{"type":"some-type","provider":["event-type-1","event-type-2"]},"provider":{"name":"provider-name","description":"provider-description","event-types":["event-type-1","event-type-2"]}}}}')
+    const expectedOutput = JSON.parse('{"format":"yaml","values":{"$id":"https://adobe.io/schemas/app-builder-templates/1","$schema":"http://json-schema.org/draft-07/schema","categories":["ui","action"],"extensions":[{"extensionPointId":"dx/excshell/1"}],"env":{"envKey1":"envValue1","envKey2":"envValue2"},"workspaces":["Stage","Production"],"apis":[{"code":"CC SDK","name":"Creative SDK"},{"code":"StockSDK","name":"Adobe Stock SDK"}],"runtime":false,"event":{"consumer":{"type":"some-type","provider":["event-type-1","event-type-2"]},"provider":{"name":"provider-name","description":"provider-description","event-types":["event-type-1","event-type-2"]}}}}')
     expect(templateConfiguration).toEqual(expectedOutput)
   })
 
   test('Successfully validate a YAML installation configuration file: Minimum example', async () => {
     const templateConfiguration = LibConfigurationHandler.loadAndValidate(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
-    const expectedOutput = JSON.parse('{"format":"yaml","values":{"categories":["ui"]}}')
+    const expectedOutput = JSON.parse('{"format":"yaml","values":{"$id":"https://adobe.io/schemas/app-builder-templates/1","$schema":"http://json-schema.org/draft-07/schema","categories":["ui"]}}')
     expect(templateConfiguration).toEqual(expectedOutput)
   })
 

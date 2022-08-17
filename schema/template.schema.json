@@ -1,8 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://adobe.io/schemas/aio/project",
+  "$id": "https://adobe.io/schemas/app-builder-templates/installation-schema/1",
   "type": "object",
   "properties": {
+    "$schema": {
+      "$ref": "#/definitions/$schema"
+    },
+    "$id": {
+      "$ref": "#/definitions/$id"
+    },
     "categories": {
       "$ref": "#/definitions/categories"
     },
@@ -26,18 +32,23 @@
     }
   },
   "required": [
+    "$schema",
+    "$id",
     "categories"
   ],
+  "additionalProperties": false,
   "definitions": {
+    "$schema": {
+      "type": "string"
+    },
+    "$id": {
+      "type": "string"
+    },
     "categories": {
       "type": "array",
       "minItems": 1,
       "items": {
-        "anyOf": [
-          {
-            "$ref": "categories#"
-          }
-        ]
+        "$ref": "categories/1#"
       }
     },
     "extensions": {
@@ -76,11 +87,16 @@
     "apis": {
       "type": "array",
       "items": {
-        "anyOf": [
-          {
-            "$ref": "apis#"
+        "type": "object",
+        "required": [
+          "code"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "code": {
+            "type": "string"
           }
-        ]
+        }
       }
     },
     "runtime": {

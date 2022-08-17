@@ -3,11 +3,6 @@ $id: https://adobe.io/schemas/app-builder-templates/1
 
 categories:
   - action
-workspaces:
-- Development
-extensions:
-- extensionPointId: dx/asset-compute/worker/1
 apis:
-- code: AssetComputeSDK # McDataServicesSdk
+  - code: GraphQLServiceSDK
 runtime: true
-

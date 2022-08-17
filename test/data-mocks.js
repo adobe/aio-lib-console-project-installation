@@ -319,6 +319,36 @@ const services = [
     atlasDefaultPlanCode: null,
     properties: null,
     requiresApproval: false
+  },
+  {
+    name: 'API Mesh for Adobe Developer App Builder',
+    code: 'GraphQLServiceSDK',
+    enabled: true,
+    type: 'adobeid',
+    platformList: [
+      'apiKey'
+    ],
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
+  },
+  {
+    name: 'Unsupported SDK',
+    code: 'UnsupportedSDK',
+    enabled: true,
+    type: 'unsupported_type',
+    platformList: null,
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
   }
 ]
 
@@ -393,6 +423,12 @@ const integrations = [
     id_workspace: workspace.id,
     integration_type: 'service',
     flow_type: 'entp'
+  },
+  {
+    id_integration: '44444',
+    id_workspace: workspace.id,
+    integration_type: 'apikey',
+    flow_type: 'adobeid'
   }
 ]
 

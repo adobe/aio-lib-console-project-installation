@@ -12,7 +12,7 @@ governing permissions and limitations under the License.
 const fs = require('fs')
 const sdk = require('@adobe/aio-lib-console')
 const env = require('@adobe/aio-lib-env')
-const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-templates:index', { level: process.env.LOG_LEVEL })
+const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-console-project-installation:index', { level: process.env.LOG_LEVEL })
 const TemplateInstallManager = require('./TemplateInstallManager.js')
 const configurationHandler = require('./lib/configuration-handler')
 
