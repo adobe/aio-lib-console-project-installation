@@ -20,10 +20,12 @@ const configurationHandler = require('./lib/configuration-handler')
  * Returns a new TemplateInstallManager object.
  *
  * @param {string} accessToken The Adobe Console API client.
- * @param {string} templateConfigurationFile The path to the configuration file.
+ * @param {string} appConfigurationFile The path to the 'app.config.yaml' configuration file.
+ * @param {string} templateName The name of the template's NPM module to install.
+ * @param {string} templateConfigurationFile The path to the 'install.yaml' configuration file.
  * @returns {TemplateInstallManager} A new TemplateInstallManager object.
  */
-async function init (accessToken, templateConfigurationFile) {
+async function init (accessToken, appConfigurationFile, templateName, templateConfigurationFile) {
   logger.debug('Initializing a new TemplateInstallManager object.')
 
   // Initialize the Console SDK
@@ -42,7 +44,7 @@ async function init (accessToken, templateConfigurationFile) {
 
   // Load and validate the configuration file
   const templateConfiguration = configurationHandler.loadAndValidate(templateConfigurationFile)
-  return new TemplateInstallManager(consoleClient, templateConfiguration.values)
+  return new TemplateInstallManager(consoleClient, appConfigurationFile, templateName, templateConfiguration.values)
 }
 
 module.exports = {

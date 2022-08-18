@@ -33,12 +33,17 @@ class TemplateInstallManager {
    * Initializes an TemplateInstallManager object.
    *
    * @param {CoreConsoleAPI} consoleClient The Adobe Console API client.
+   * @param {string} appConfigurationFile The path to the 'app.config.yaml' configuration file.
+   * @param {string} name The name of the template's NPM module.
    * @param {object} configuration The template configuration object in JSON format. See the template.schema.json file for the schema.
    */
-  constructor (consoleClient, configuration) {
+  constructor (consoleClient, appConfigurationFile, name, configuration) {
     this.sdkClient = consoleClient
+    this.appConfigurationFile = appConfigurationFile
+    this.name = name
     this.configuration = configuration
-    logger.debug(`template configuration: ${JSON.stringify(this.configuration)}`)
+    logger.debug(`Installing template: ${JSON.stringify(this.name)}`)
+    logger.debug(`Template configuration: ${JSON.stringify(this.configuration)}`)
   }
 
   /**
@@ -62,6 +67,11 @@ class TemplateInstallManager {
     const apis = this.configuration.apis
     if (apis) {
       await this.configureAPIs(orgId, projectId, apis)
+    }
+
+    const hooks = this.configuration.hooks
+    if (hooks) {
+      await this.configureHooks(hooks)
     }
   }
 
@@ -196,6 +206,30 @@ class TemplateInstallManager {
     const credentialId = await this.getWorkspaceAdobeIdCredentials(orgId, projectId, workspaceId)
     const serviceInfo = this.getServiceInfo(service)
     await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
+  }
+
+  /**
+   * Configure hooks required for the template.
+   *
+   * @private
+   * @param {Array<string>} hooks The hooks to configure used by the template.
+   */
+  async configureHooks (hooks) {
+    // Find the name of the npm module that contains the hooks.
+    const npmModule = this.name
+
+    // Find app.config.yaml file.
+    const appConfigFile = await this.sdkClient.getAppConfigFile(this.name)
+
+    // Open app.config.yaml file.
+
+    // Add the template-hooks key to the app.config.yaml file.
+
+    // Add the hooks to the template-hooks key.
+
+    // Add the name of the template under the right hook.
+
+    // Close app.config.yaml file.
   }
 
   /**
