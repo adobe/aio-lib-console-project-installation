@@ -34,16 +34,16 @@ class TemplateInstallManager {
    *
    * @param {CoreConsoleAPI} consoleClient The Adobe Console API client.
    * @param {string} appConfigurationFile The path to the 'app.config.yaml' configuration file.
-   * @param {string} name The name of the template's NPM module.
-   * @param {object} configuration The template configuration object in JSON format. See the template.schema.json file for the schema.
+   * @param {string} templateName The name of the template's NPM module.
+   * @param {object} templateConfiguration The template configuration object in JSON format. See the template.schema.json file for the schema.
    */
-  constructor (consoleClient, appConfigurationFile, name, configuration) {
+  constructor (consoleClient, appConfigurationFile, templateName, templateConfiguration) {
     this.sdkClient = consoleClient
     this.appConfigurationFile = appConfigurationFile
-    this.name = name
-    this.configuration = configuration
-    logger.debug(`Installing template: ${JSON.stringify(this.name)}`)
-    logger.debug(`Template configuration: ${JSON.stringify(this.configuration)}`)
+    this.templateName = templateName
+    this.templateConfiguration = templateConfiguration
+    logger.debug(`Installing template: ${JSON.stringify(this.templateName)}`)
+    logger.debug(`Template configuration: ${JSON.stringify(this.templateConfiguration)}`)
   }
 
   /**
@@ -56,20 +56,20 @@ class TemplateInstallManager {
    */
   async installTemplate (orgId, projectId) {
     // Configure workspaces.
-    const runtime = this.configuration.runtime === undefined ? false : this.configuration.runtime
-    const workspaces = this.configuration.workspaces
+    const runtime = this.templateConfiguration.runtime === undefined ? false : this.templateConfiguration.runtime
+    const workspaces = this.templateConfiguration.workspaces
     if (workspaces) {
       await this.configureWorkspaces(orgId, projectId, runtime, workspaces)
     } else {
       await this.configureWorkspaces(orgId, projectId, runtime)
     }
 
-    const apis = this.configuration.apis
+    const apis = this.templateConfiguration.apis
     if (apis) {
       await this.configureAPIs(orgId, projectId, apis)
     }
 
-    const hooks = this.configuration.hooks
+    const hooks = this.templateConfiguration.hooks
     if (hooks) {
       await this.configureHooks(hooks)
     }
@@ -175,6 +175,30 @@ class TemplateInstallManager {
   }
 
   /**
+   * Configure hooks required for the template.
+   *
+   * @private
+   * @param {Array<string>} hooks The hooks to configure used by the template.
+   */
+  async configureHooks (hooks) {
+    // Find the name of the npm module that contains the hooks.
+    const npmModule = this.templateName
+
+    // Find app.config.yaml file.
+    const appConfigFile = await this.sdkClient.getAppConfigFile(this.templateName)
+
+    // Open app.config.yaml file.
+
+    // Add the template-hooks key to the app.config.yaml file.
+
+    // Add the hooks to the template-hooks key.
+
+    // Add the name of the template under the right hook.
+
+    // Close app.config.yaml file.
+  }
+
+  /**
    * Onboards an Enterprise API to the workspace.
    *
    * @private
@@ -206,30 +230,6 @@ class TemplateInstallManager {
     const credentialId = await this.getWorkspaceAdobeIdCredentials(orgId, projectId, workspaceId)
     const serviceInfo = this.getServiceInfo(service)
     await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
-  }
-
-  /**
-   * Configure hooks required for the template.
-   *
-   * @private
-   * @param {Array<string>} hooks The hooks to configure used by the template.
-   */
-  async configureHooks (hooks) {
-    // Find the name of the npm module that contains the hooks.
-    const npmModule = this.name
-
-    // Find app.config.yaml file.
-    const appConfigFile = await this.sdkClient.getAppConfigFile(this.name)
-
-    // Open app.config.yaml file.
-
-    // Add the template-hooks key to the app.config.yaml file.
-
-    // Add the hooks to the template-hooks key.
-
-    // Add the name of the template under the right hook.
-
-    // Close app.config.yaml file.
   }
 
   /**
