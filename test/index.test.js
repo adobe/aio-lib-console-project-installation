@@ -11,15 +11,24 @@ governing permissions and limitations under the License.
 
 const path = require('path')
 const { CLI } = require('@adobe/aio-lib-ims/src/context')
+const fs = require('fs')
 const { expect, describe, test, beforeEach } = require('@jest/globals')
 const { getToken } = require('@adobe/aio-lib-ims')
 const templateHandler = require('../src')
 const TemplateInstallManager = require('../src/TemplateInstallManager')
+const appConfigFixture = path.join(__dirname, '/fixtures/app.config.yaml')
+const appConfigFile = path.join('/tmp/app.config.yaml')
+const templateName = '@adobe/mock-template'
+
 jest.mock('@adobe/aio-lib-ims', () => ({
   getToken: jest.fn().mockResolvedValue('mock-access-token')
 }))
+
 beforeEach(() => {
   jest.clearAllMocks()
+
+  // Copy app config fixture to tmp directory
+  fs.copyFileSync(appConfigFixture, appConfigFile)
 })
 
 describe('index', () => {
@@ -28,7 +37,7 @@ describe('index', () => {
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
     expect(templateManager).toBeInstanceOf(TemplateInstallManager)
   })
 
@@ -38,7 +47,7 @@ describe('index', () => {
     process.env.AIO_CLI_ENV = 'stage'
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
     expect(templateManager).toBeInstanceOf(TemplateInstallManager)
   })
 
@@ -48,7 +57,7 @@ describe('index', () => {
 
     // Instantiate App Builder Template Manager
     const fixturePath = path.join(__dirname, '/fixtures/file-does-not-exist.yaml')
-    await expect(templateHandler.init(accessToken, fixturePath)).rejects.toThrow()
+    await expect(templateHandler.init(accessToken, appConfigFile, templateName, fixturePath)).rejects.toThrow()
   })
 
   test('Config file path is a directory', async () => {
@@ -57,6 +66,6 @@ describe('index', () => {
 
     // Instantiate App Builder Template Manager
     const fixturePath = path.join(__dirname, '/fixtures/')
-    await expect(templateHandler.init(accessToken, fixturePath)).rejects.toThrow()
+    await expect(templateHandler.init(accessToken, appConfigFile, templateName, fixturePath)).rejects.toThrow()
   })
 })
