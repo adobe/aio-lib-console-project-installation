@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://adobe.io/schemas/app-builder-templates/installation-schema/hooks/1",
+  "type": "string",
+  "enum": [
+    "pre-app-run",
+    "post-app-run",
+    "pre-app-build",
+    "post-app-build",
+    "pre-app-deploy",
+    "post-app-deploy",
+    "build-actions",
+    "deploy-actions",
+    "build-static",
+    "serve-static",
+    "pre-app-undeploy",
+    "post-app-undeploy",
+    "undeploy-actions",
+    "undeploy-static"
+  ]
+}

@@ -150,31 +150,10 @@
     },
     "hooks": {
       "type": "array",
+      "minItems": 1,
       "items": {
-        "anyOf": [
-          {
-            "type": "string",
-            "enum": [
-              "pre-app-run",
-              "post-app-run",
-              "pre-app-build",
-              "post-app-build",
-              "pre-app-deploy",
-              "post-app-deploy",
-              "build-actions",
-              "deploy-actions",
-              "build-static",
-              "serve-static",
-              "pre-app-undeploy",
-              "post-app-undeploy",
-              "undeploy-actions",
-              "undeploy-static"
-            ]
-          }
-        ]
-      },
-      "uniqueItems": true,
-      "additionalProperties": false
+        "$ref": "hooks/1#"
+      }
     }
   }
 }

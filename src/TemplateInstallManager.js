@@ -15,6 +15,7 @@ const loggerNamespace = '@adobe/aio-lib-console-project-installation'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
 const fs = require('fs')
 const tmp = require('tmp')
+const yaml = require('js-yaml')
 
 const SERVICE_TYPE_ENTERPRISE = 'entp'
 const SERVICE_TYPE_ADOBEID = 'adobeid'
@@ -181,13 +182,15 @@ class TemplateInstallManager {
    * @param {Array<string>} hooks The hooks to configure used by the template.
    */
   async configureHooks (hooks) {
-    // Find the name of the npm module that contains the hooks.
-    const npmModule = this.templateName
-
-    // Find app.config.yaml file.
-    const appConfigFile = await this.sdkClient.getAppConfigFile(this.templateName)
-
     // Open app.config.yaml file.
+    try {
+      const fileContents = fs.readFileSync(this.appConfigurationFile, 'utf8')
+      const data = yaml.safeLoad(fileContents)
+
+      console.log(data)
+    } catch (e) {
+      console.log(e)
+    }
 
     // Add the template-hooks key to the app.config.yaml file.
 
