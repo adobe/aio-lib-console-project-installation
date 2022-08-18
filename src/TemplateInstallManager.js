@@ -183,22 +183,37 @@ class TemplateInstallManager {
    */
   async configureHooks (hooks) {
     // Open app.config.yaml file.
+    let appConfigObj = {}
     try {
+      logger.info('Reading app.config.yaml file.')
+      logger.debug('app.config.yaml file path: ' + this.appConfigurationFile)
       const fileContents = fs.readFileSync(this.appConfigurationFile, 'utf8')
-      const data = yaml.safeLoad(fileContents)
+      appConfigObj = yaml.load(fileContents)
+      logger.debug(`app.config.yaml file contents: ${JSON.stringify(appConfigObj)}.`)
 
-      console.log(data)
+      // Add the template-hooks key to the app.config.yaml file if it doesn't exist.
+      logger.info('Adding template-hooks configuration to app.config.yaml file.')
+      if (!appConfigObj['template-hooks']) {
+        appConfigObj['template-hooks'] = {}
+      }
+
+      // Add the hooks to the template-hooks key.
+      hooks.forEach(hook => {
+        if (!appConfigObj['template-hooks'][hook]) {
+          appConfigObj['template-hooks'][hook] = [this.templateName]
+        } else {
+          appConfigObj['template-hooks'][hook].push(this.templateName)
+        }
+      })
+
+      // Write changes to the app.config.yaml file.
+      logger.debug(`Writing app.config.yaml file: ${JSON.stringify(appConfigObj)}`)
+      console.log(appConfigObj)
+      console.log(appConfigObj.application.runtimeManifest)
+      fs.writeFileSync('/tmp/test1.yaml', yaml.dump(appConfigObj), 'utf8')
     } catch (e) {
-      console.log(e)
+      logger.error(e)
     }
-
-    // Add the template-hooks key to the app.config.yaml file.
-
-    // Add the hooks to the template-hooks key.
-
-    // Add the name of the template under the right hook.
-
-    // Close app.config.yaml file.
   }
 
   /**

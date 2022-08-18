@@ -1,0 +1,22 @@
+application:
+  actions: actions
+  runtimeManifest:
+    packages:
+      hackathon-isv-app-deployment:
+        license: Apache-2.0
+        actions:
+          generic:
+            function: actions/generic/index.js
+            web: 'yes'
+            runtime: 'nodejs:14'
+            inputs:
+              LOG_LEVEL: debug
+            annotations:
+              require-adobe-auth: false
+              final: true
+extensions:
+  dx/excshell/1:
+    $include: src/dx-excshell-1/ext.config.yaml
+template-hooks:
+  post-app-run:
+    - '@myscope/my-template'

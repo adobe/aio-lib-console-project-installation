@@ -8,3 +8,6 @@ extensions:
 apis:
 - code: AssetComputeSDK # McDataServicesSdk
 runtime: true
+hooks:
+  - pre-app-run
+  - post-app-run

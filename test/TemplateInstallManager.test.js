@@ -9,19 +9,24 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-const dataMocks = require('./data-mocks')
-const path = require('path')
 const fs = require('fs')
+const path = require('path')
+const yaml = require('js-yaml')
+
 const { CLI } = require('@adobe/aio-lib-ims/src/context')
 const { expect, describe, test, beforeEach } = require('@jest/globals')
 const { getToken } = require('@adobe/aio-lib-ims')
+const consoleSDK = require('@adobe/aio-lib-console')
+
+const dataMocks = require('./data-mocks')
 const templateHandler = require('../src')
+
 jest.mock('@adobe/aio-lib-ims', () => ({
   getToken: jest.fn().mockResolvedValue('mock-access-token')
 }))
+
 // console sdk mock setup
 jest.mock('@adobe/aio-lib-console')
-const consoleSDK = require('@adobe/aio-lib-console')
 const mockConsoleSDKInstance = {
   getOrganizations: jest.fn(),
   getProjectsForOrg: jest.fn(),
@@ -49,11 +54,12 @@ const mockConsoleSDKInstance = {
   uploadAndBindCertificate: jest.fn(),
   deleteBinding: jest.fn()
 }
-const appConfigFixture = path.join(__dirname, '/fixtures/app.config.yaml')
+consoleSDK.init.mockResolvedValue(mockConsoleSDKInstance)
+
+// Template hooks mock setup
+const defaultAppConfigFixture = path.join(__dirname, '/fixtures/app.config-with-template-hooks.yaml')
 const appConfigFile = path.join('/tmp/app.config.yaml')
 const templateName = '@adobe/mock-template'
-
-consoleSDK.init.mockResolvedValue(mockConsoleSDKInstance)
 
 beforeEach(async () => {
   jest.clearAllMocks()
@@ -68,20 +74,28 @@ beforeEach(async () => {
   mockConsoleSDKInstance.subscribeCredentialToServices.mockResolvedValue({ body: dataMocks.subscribeServicesResponse })
 
   // Copy app.config.yaml to tmp folder
-  fs.copyFileSync(appConfigFixture, appConfigFile)
+  fs.copyFileSync(defaultAppConfigFixture, appConfigFile)
 })
 
 describe('TemplateInstallManager', () => {
-  test('Successfully install a template', async () => {
+  test('Successfully install a template with hooks', async () => {
     // Instantiate Adobe Developer Console SDK
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml'))
+    const templateConfigFile = path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml')
+    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, templateConfigFile)
+
+    // Read modified app.config.yaml
+    const fileContents = fs.readFileSync(appConfigFile, 'utf8')
+    const appConfigObj = yaml.load(fileContents)
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    expect.assertions(1)
+    expect.assertions(2)
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+
+    const expectedAppConfig = JSON.parse('{"application": {"actions": "actions", "runtimeManifest": {"packages": {"hackathon-isv-app-deployment": {"actions": {"generic": {"annotations": {"final": true, "require-adobe-auth": false}, "function": "actions/generic/index.js", "inputs": {"LOG_LEVEL": "debug"}, "runtime": "nodejs:14", "web": "yes"}}, "license": "Apache-2.0"}}}}, "extensions": {"dx/excshell/1": {"$include": "src/dx-excshell-1/ext.config.yaml"}}, "template-hooks": {"post-app-run": ["@myscope/my-template"]}}')
+    expect(appConfigObj).toEqual(expectedAppConfig)
   })
 
   test('Successfully install a template, minimum config', async () => {
