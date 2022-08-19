@@ -199,13 +199,13 @@ class TemplateInstallManager {
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
    * @param {string} workspaceId The ID of the workspace to configure the APIs for.
-   * @param {object} service A list of services to onboard.
+   * @param {object} services A list of services to onboard.
    * @returns {Promise<void>} A promise that resolves when the AdobeId API is onboarded.
    */
-  async onboardAdobeIdApi (orgId, projectId, workspaceId, service) {
+  async onboardAdobeIdApi (orgId, projectId, workspaceId, services) {
     const credentialType = SERVICE_TYPE_ADOBEID
     const credentialId = await this.getWorkspaceAdobeIdCredentials(orgId, projectId, workspaceId)
-    const serviceInfo = this.getServicesInfo(service)
+    const serviceInfo = this.getServicesInfo(orgId, services)
     await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
   }
 
