@@ -14,6 +14,9 @@ governing permissions and limitations under the License.
 
 # Adobe I/O Lib Console Project Installation
 
+This is an internal helper library to create and configure remote Developer Console resources, like services
+and credentials, based on a template's `install.yaml` configuration file. 
+
 ### Installing
 
 ```bash
