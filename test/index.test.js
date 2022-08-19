@@ -16,7 +16,7 @@ const { expect, describe, test, beforeEach } = require('@jest/globals')
 const { getToken } = require('@adobe/aio-lib-ims')
 const templateHandler = require('../src')
 const TemplateInstallManager = require('../src/TemplateInstallManager')
-const appConfigFixture = path.join(__dirname, '/fixtures/app.config.yaml')
+const appConfigFixture = path.join(__dirname, '/fixtures/app.config-with-template-hooks.yaml')
 const appConfigFile = path.join('/tmp/app.config.yaml')
 const templateName = '@adobe/mock-template'
 

@@ -201,18 +201,18 @@ class TemplateInstallManager {
       hooks.forEach(hook => {
         if (!appConfigObj['template-hooks'][hook]) {
           appConfigObj['template-hooks'][hook] = [this.templateName]
-        } else {
+        } else if (!appConfigObj['template-hooks'][hook].includes(this.templateName)) {
           appConfigObj['template-hooks'][hook].push(this.templateName)
         }
       })
 
       // Write changes to the app.config.yaml file.
       logger.debug(`Writing app.config.yaml file: ${JSON.stringify(appConfigObj)}`)
-      console.log(appConfigObj)
-      console.log(appConfigObj.application.runtimeManifest)
-      fs.writeFileSync('/tmp/test1.yaml', yaml.dump(appConfigObj), 'utf8')
+      fs.writeFileSync(this.appConfigurationFile, yaml.dump(appConfigObj), 'utf8')
     } catch (e) {
-      logger.error(e)
+      const errorMessage = `There was an unexpected error configuring hooks for template ${JSON.stringify(this.templateName)}.`
+      logger.error(errorMessage)
+      throw new Error(e)
     }
   }
 

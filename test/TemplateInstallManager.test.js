@@ -58,7 +58,7 @@ consoleSDK.init.mockResolvedValue(mockConsoleSDKInstance)
 
 // Template hooks mock setup
 const defaultAppConfigFixture = path.join(__dirname, '/fixtures/app.config-with-template-hooks.yaml')
-const appConfigFile = path.join('/tmp/app.config.yaml')
+const defaultAppConfigFile = '/tmp/app.config.yaml'
 const templateName = '@adobe/mock-template'
 
 beforeEach(async () => {
@@ -74,27 +74,79 @@ beforeEach(async () => {
   mockConsoleSDKInstance.subscribeCredentialToServices.mockResolvedValue({ body: dataMocks.subscribeServicesResponse })
 
   // Copy app.config.yaml to tmp folder
-  fs.copyFileSync(defaultAppConfigFixture, appConfigFile)
+  fs.copyFileSync(defaultAppConfigFixture, defaultAppConfigFile)
 })
 
 describe('TemplateInstallManager', () => {
-  test('Successfully install a template with hooks', async () => {
+  test('Successfully install a template with preconfigured hooks', async () => {
     // Instantiate Adobe Developer Console SDK
     const accessToken = await getToken(CLI)
+
+    // Copy app.config.yaml to tmp folder
+    const appConfigFixture = path.join(__dirname, '/fixtures/app.config-preconfigured-template-hooks.yaml')
+    const appConfigFile = '/tmp/app.config-with-hooks.yaml'
+    fs.copyFileSync(appConfigFixture, appConfigFile)
 
     // Instantiate App Builder Template Manager
     const templateConfigFile = path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml')
     const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, templateConfigFile)
 
-    // Read modified app.config.yaml
+    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    expect.assertions(2)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+
+    // Read modified app.config.yaml and assert that the template hooks are configured
     const fileContents = fs.readFileSync(appConfigFile, 'utf8')
     const appConfigObj = yaml.load(fileContents)
+    const expectedAppConfig = JSON.parse('{"application": {"actions": "actions", "runtimeManifest": {"packages": {"hackathon-isv-app-deployment": {"actions": {"generic": {"annotations": {"final": true, "require-adobe-auth": false}, "function": "actions/generic/index.js", "inputs": {"LOG_LEVEL": "debug"}, "runtime": "nodejs:14", "web": "yes"}}, "license": "Apache-2.0"}}}}, "extensions": {"dx/excshell/1": {"$include": "src/dx-excshell-1/ext.config.yaml"}}, "template-hooks": {"post-app-run": ["@myscope/my-template", "@adobe/mock-template"], "pre-app-run": ["@adobe/mock-template"]}}')
+    expect(appConfigObj).toEqual(expectedAppConfig)
+  })
+
+  test('Successfully install a template with partial hooks', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Copy app.config.yaml to tmp folder
+    const appConfigFixture = path.join(__dirname, '/fixtures/app.config-with-template-hooks.yaml')
+    const appConfigFile = '/tmp/app.config-with-hooks.yaml'
+    fs.copyFileSync(appConfigFixture, appConfigFile)
+
+    // Instantiate App Builder Template Manager
+    const templateConfigFile = path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml')
+    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, templateConfigFile)
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(2)
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
 
-    const expectedAppConfig = JSON.parse('{"application": {"actions": "actions", "runtimeManifest": {"packages": {"hackathon-isv-app-deployment": {"actions": {"generic": {"annotations": {"final": true, "require-adobe-auth": false}, "function": "actions/generic/index.js", "inputs": {"LOG_LEVEL": "debug"}, "runtime": "nodejs:14", "web": "yes"}}, "license": "Apache-2.0"}}}}, "extensions": {"dx/excshell/1": {"$include": "src/dx-excshell-1/ext.config.yaml"}}, "template-hooks": {"post-app-run": ["@myscope/my-template"]}}')
+    // Read modified app.config.yaml and assert that the template hooks are configured
+    const fileContents = fs.readFileSync(appConfigFile, 'utf8')
+    const appConfigObj = yaml.load(fileContents)
+    const expectedAppConfig = JSON.parse('{"application": {"actions": "actions", "runtimeManifest": {"packages": {"hackathon-isv-app-deployment": {"actions": {"generic": {"annotations": {"final": true, "require-adobe-auth": false}, "function": "actions/generic/index.js", "inputs": {"LOG_LEVEL": "debug"}, "runtime": "nodejs:14", "web": "yes"}}, "license": "Apache-2.0"}}}}, "extensions": {"dx/excshell/1": {"$include": "src/dx-excshell-1/ext.config.yaml"}}, "template-hooks": {"post-app-run": ["@myscope/my-template", "@adobe/mock-template"], "pre-app-run": ["@adobe/mock-template"]}}')
+    expect(appConfigObj).toEqual(expectedAppConfig)
+  })
+
+  test('Successfully install a template with no hooks', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Copy app.config.yaml to tmp folder
+    const appConfigFixture = path.join(__dirname, '/fixtures/app.config-no-template-hooks.yaml')
+    const appConfigFile = '/tmp/app.config-no-hooks.yaml'
+    fs.copyFileSync(appConfigFixture, appConfigFile)
+
+    // Instantiate App Builder Template Manager
+    const templateConfigFile = path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml')
+    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, templateConfigFile)
+
+    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    expect.assertions(2)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+
+    // Read modified app.config.yaml and assert that the template hooks are configured
+    const fileContents = fs.readFileSync(appConfigFile, 'utf8')
+    const appConfigObj = yaml.load(fileContents)
+    const expectedAppConfig = JSON.parse('{"application": {"actions": "actions", "runtimeManifest": {"packages": {"hackathon-isv-app-deployment": {"actions": {"generic": {"annotations": {"final": true, "require-adobe-auth": false}, "function": "actions/generic/index.js", "inputs": {"LOG_LEVEL": "debug"}, "runtime": "nodejs:14", "web": "yes"}}, "license": "Apache-2.0"}}}}, "extensions": {"dx/excshell/1": {"$include": "src/dx-excshell-1/ext.config.yaml"}}, "template-hooks": {"post-app-run": ["@adobe/mock-template"], "pre-app-run": ["@adobe/mock-template"]}}')
     expect(appConfigObj).toEqual(expectedAppConfig)
   })
 
@@ -103,7 +155,7 @@ describe('TemplateInstallManager', () => {
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
@@ -119,7 +171,7 @@ describe('TemplateInstallManager', () => {
     mockConsoleSDKInstance.getServicesForOrg.mockResolvedValue({ body: dataMocks.servicesNoProperties })
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-no-runtime.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-no-runtime.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
@@ -131,7 +183,7 @@ describe('TemplateInstallManager', () => {
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-workspaces.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-workspaces.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
@@ -143,7 +195,7 @@ describe('TemplateInstallManager', () => {
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-runtime.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-runtime.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
@@ -155,7 +207,7 @@ describe('TemplateInstallManager', () => {
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-adobeid.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-adobeid.yaml'))
 
     // covers a case when no adobeid credentials created for a workspace yet
     mockConsoleSDKInstance.getCredentials.mockResolvedValueOnce({ body: [] })
@@ -170,7 +222,7 @@ describe('TemplateInstallManager', () => {
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-unsupported-service-type.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-unsupported-service-type.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
@@ -182,7 +234,7 @@ describe('TemplateInstallManager', () => {
     const accessToken = await getToken(CLI)
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-service-code.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-service-code.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Service code "CampaignSDK" not found in the organization.')
@@ -198,9 +250,25 @@ describe('TemplateInstallManager', () => {
     })
 
     // Instantiate App Builder Template Manager
-    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml'))
+    const templateManager = await templateHandler.init(accessToken, defaultAppConfigFile, templateName, path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow()
+  })
+
+  test('Fail to install a template with hooks', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Copy app.config.yaml to tmp folder
+    const appConfigFile = '/tmp/app.config-not-exists.yaml'
+
+    // Instantiate App Builder Template Manager
+    const templateConfigFile = path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml')
+    const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, templateConfigFile)
+
+    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    expect.assertions(1)
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow()
   })
 })

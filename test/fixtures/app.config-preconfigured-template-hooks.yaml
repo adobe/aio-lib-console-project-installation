@@ -20,3 +20,6 @@ extensions:
 template-hooks:
   post-app-run:
     - '@myscope/my-template'
+    - '@adobe/mock-template'
+  pre-app-run:
+    - '@adobe/mock-template'
