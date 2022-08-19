@@ -136,17 +136,19 @@ class TemplateInstallManager {
     for (const workspace of currentWorkspaces) {
       const workspaceId = workspace.id
 
+      const enterpriseServices = []
+      const adobeIdServices = []
       for (const api of apis) {
         const service = orgServices.find(service => service.code === api.code)
         if (service && service.enabled === true) {
           const serviceType = service.type
           switch (serviceType) {
             case SERVICE_TYPE_ENTERPRISE: {
-              await this.onboardEnterpriseApi(orgId, projectId, workspaceId, service)
+              enterpriseServices.push(service.code)
               break
             }
             case SERVICE_TYPE_ADOBEID: {
-              await this.onboardAdobeIdApi(orgId, projectId, workspaceId, service)
+              adobeIdServices.push(service.code)
               break
             }
             default: {
@@ -161,6 +163,15 @@ class TemplateInstallManager {
           throw new Error(errorMessage)
         }
       }
+
+      // Onboard APIs
+      if (enterpriseServices.length > 0) {
+        await this.onboardEnterpriseApi(orgId, projectId, workspaceId, enterpriseServices)
+      }
+
+      if (adobeIdServices.length > 0) {
+        await this.onboardAdobeIdApi(orgId, projectId, workspaceId, adobeIdServices)
+      }
     }
   }
 
@@ -171,13 +182,13 @@ class TemplateInstallManager {
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
    * @param {string} workspaceId The ID of the workspace to configure the APIs for.
-   * @param {object} service The service info.
+   * @param {Array} services A list of services to onboard.
    * @returns {Promise<void>} A promise that resolves when the Enterprise API is onboarded.
    */
-  async onboardEnterpriseApi (orgId, projectId, workspaceId, service) {
+  async onboardEnterpriseApi (orgId, projectId, workspaceId, services) {
     const credentialType = SERVICE_TYPE_ENTERPRISE
     const credentialId = await this.getWorkspaceEnterpriseCredentials(orgId, projectId, workspaceId)
-    const serviceInfo = this.getServiceInfo(service)
+    const serviceInfo = this.getServicesInfo(orgId, services)
     await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
   }
 
@@ -188,13 +199,13 @@ class TemplateInstallManager {
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
    * @param {string} workspaceId The ID of the workspace to configure the APIs for.
-   * @param {object} service The service info.
+   * @param {object} service A list of services to onboard.
    * @returns {Promise<void>} A promise that resolves when the AdobeId API is onboarded.
    */
   async onboardAdobeIdApi (orgId, projectId, workspaceId, service) {
     const credentialType = SERVICE_TYPE_ADOBEID
     const credentialId = await this.getWorkspaceAdobeIdCredentials(orgId, projectId, workspaceId)
-    const serviceInfo = this.getServiceInfo(service)
+    const serviceInfo = this.getServicesInfo(service)
     await this.subscribeAPI(orgId, projectId, workspaceId, credentialType, credentialId, serviceInfo)
   }
 
@@ -255,24 +266,22 @@ class TemplateInstallManager {
    * Get Service Info for the Organization.
    *
    * @private
-   * @param {object} service The service to get the info for.
-   * @returns {object} The service info.
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {Array} services The service to get the info for.
+   * @returns {object} The services info presented as a map.
    */
-  getServiceInfo (service) {
-    const serviceProperties = [{
-      name: service.name,
-      sdkCode: service.code,
-      roles: (service.properties && service.properties.roles) || null,
-      licenseConfigs: (service.properties && service.properties.licenseConfigs) || null
-    }]
-    const serviceInfo = serviceProperties.map(sp => {
+  async getServicesInfo (orgId, services) {
+    const orgServicesWithProductProfiles = (await this.sdkClient.getServicesForOrg(orgId)).body.filter(s => s.enabled)
+    const serviceInfo = services.map(sp => {
+      const orgServiceDefinition = orgServicesWithProductProfiles.find(os => os.code === sp)
       return {
-        sdkCode: sp.sdkCode,
-        roles: sp.roles,
-        licenseConfigs: (sp.licenseConfigs || null) && sp.licenseConfigs.map(l => ({
+        sdkCode: sp,
+        name: orgServiceDefinition?.name || null,
+        roles: orgServiceDefinition?.properties?.roles || null,
+        licenseConfigs: (orgServiceDefinition?.properties?.licenseConfigs || null) && orgServiceDefinition?.properties?.licenseConfigs.map(l => ({
           op: 'add',
-          id: l.id,
-          productId: l.productId
+          id: l?.id,
+          productId: l?.productId
         }))
       }
     })

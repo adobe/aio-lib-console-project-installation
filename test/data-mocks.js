@@ -354,7 +354,7 @@ const services = [
 
 const servicesNoProperties = [
   {
-    name: 'First SDK',
+    // Removed name propoerty to test service mapping when service definition has no name
     code: 'AssetComputeSDK',
     enabled: true,
     type: 'entp',
