@@ -36,7 +36,9 @@ const accessToken = await getToken(CLI)
 
 // Instantiate App Builder Template Manager
 const installConfigFile = 'install.yml'
-const templateManager = await templateHandler.init(accessToken, installConfigFile)
+const appConfigFile = 'app.config.yml'
+const templateName = 'my-template'
+const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, installConfigFile)
 ```
 
 2) Call methods using the initialized Template Manager
