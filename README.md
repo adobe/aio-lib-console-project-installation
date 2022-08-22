@@ -23,6 +23,10 @@ The following keys are supported in the `install.yaml` file:
 - `runtime`: (Optional) Defines whether Runtime should be configured for each workspace. If not defined, the default is `false`.
 - `apis`: (Optional) A list of Adobe services, identified by their SDK code required by the template to work. By default, all services are attached to all configured workspaces.
 
+> A note on `apis`:
+> Developer Console supports three types of services: AdobeIO, Enterprise and Analytics.
+> Currently, only AdobeIO and Enterprise services are supported for configuration by this library.
+
 ### Installing
 
 ```bash
