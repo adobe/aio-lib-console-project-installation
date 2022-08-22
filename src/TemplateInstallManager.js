@@ -267,7 +267,7 @@ class TemplateInstallManager {
    *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
-   * @param {Array} services The service to get the info for.
+   * @param {Array} services A list of services to get the info for.
    * @returns {object} The services info presented as a map.
    */
   async getServicesInfo (orgId, services) {
