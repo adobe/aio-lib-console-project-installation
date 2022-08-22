@@ -72,8 +72,9 @@ describe('TemplateInstallManager', () => {
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-full.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    expect.assertions(1)
+    expect.assertions(2)
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledTimes(5)
   })
 
   test('Successfully install a template, minimum config', async () => {
@@ -139,8 +140,25 @@ describe('TemplateInstallManager', () => {
     mockConsoleSDKInstance.getCredentials.mockResolvedValueOnce({ body: [] })
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    expect.assertions(1)
+    expect.assertions(2)
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledTimes(5)
+  })
+
+  test('Successfully install a template with multiple API Types', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Instantiate App Builder Template Manager
+    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-multiple-apis.yaml'))
+
+    // covers a case when no adobeid credentials created for a workspace yet
+    mockConsoleSDKInstance.getCredentials.mockResolvedValueOnce({ body: [] })
+
+    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    expect.assertions(2)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledTimes(10)
   })
 
   test('Try to install a template with an unsupported service type', async () => {
