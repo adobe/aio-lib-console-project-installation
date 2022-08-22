@@ -14,6 +14,15 @@ governing permissions and limitations under the License.
 
 # Adobe I/O Lib Console Project Installation
 
+This is an internal helper library to create and configure remote Developer Console resources, like services and credentials, based on a template's `install.yaml` configuration file.
+
+The following keys are supported in the `install.yaml` file:
+
+- `categories`: (Required) Categories are informational and at least one category must be defined. See a list of supported categories [here](https://git.corp.adobe.com/CNA/aio-template-support/blob/main/categories.json).
+- `workspaces`: (Optional) A list of workspace names to create. Runtime namespaces are added by default for each workspace, if the runtime key is set to true. Staging and Production workspaces are created by default if not defined.
+- `runtime`: (Optional) Defines whether Runtime should be configured for each workspace. If not defined, the default is `false`.
+- `apis`: (Optional) A list of Adobe services, identified by their SDK code required by the template to work. By default, all services are attached to all configured workspaces.
+
 ### Installing
 
 ```bash
@@ -33,7 +42,9 @@ const accessToken = await getToken(CLI)
 
 // Instantiate App Builder Template Manager
 const installConfigFile = 'install.yml'
-const templateManager = await templateHandler.init(accessToken, installConfigFile)
+const appConfigFile = 'app.config.yml'
+const templateName = 'my-template'
+const templateManager = await templateHandler.init(accessToken, appConfigFile, templateName, installConfigFile)
 ```
 
 2) Call methods using the initialized Template Manager
