@@ -44,5 +44,8 @@
         ]
       }
     ]
-  }
+  },
+    "parserOptions": {
+        "ecmaVersion": 2020
+    }
 }

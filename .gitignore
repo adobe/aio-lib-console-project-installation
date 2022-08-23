@@ -105,3 +105,6 @@ dist
 
 # Jest-Unit test coverage
 junit.xml
+
+# Visual Studio Code
+.vscode/
