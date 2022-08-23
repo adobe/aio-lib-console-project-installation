@@ -278,7 +278,7 @@ class TemplateInstallManager {
         sdkCode: serviceCode,
         name: orgServiceDefinition?.name || null,
         roles: orgServiceDefinition?.properties?.roles || null,
-        licenseConfigs: (orgServiceDefinition?.properties?.licenseConfigs || null) && orgServiceDefinition?.properties?.licenseConfigs.map(l => ({
+        licenseConfigs: (orgServiceDefinition?.properties?.licenseConfigs || null) && orgServiceDefinition.properties.licenseConfigs.map(l => ({
           op: 'add',
           id: l?.id,
           productId: l?.productId
