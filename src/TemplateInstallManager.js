@@ -298,7 +298,7 @@ class TemplateInstallManager {
    * @param {string} workspaceId The ID of the workspace to subscribe the API to.
    * @param {string} credentialType The type of credential to get. Defaults to 'entp'.
    * @param {string} credentialId The ID of the credential to use.
-   * @param  {Map} servicesInfo The service info to use.
+   * @param {Map} servicesInfo The services info presented as a map.
    */
   async subscribeAPIS (orgId, projectId, workspaceId, credentialType, credentialId, servicesInfo) {
     try {
