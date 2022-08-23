@@ -188,7 +188,7 @@ class TemplateInstallManager {
   async onboardEnterpriseApi (orgId, projectId, workspaceId, services) {
     const credentialType = SERVICE_TYPE_ENTERPRISE
     const credentialId = await this.getWorkspaceEnterpriseCredentials(orgId, projectId, workspaceId)
-    const servicesInfo = this.getServicesInfo(orgId, services)
+    const servicesInfo = await this.getServicesInfo(orgId, services)
     await this.subscribeAPIS(orgId, projectId, workspaceId, credentialType, credentialId, servicesInfo)
   }
 
@@ -205,7 +205,7 @@ class TemplateInstallManager {
   async onboardAdobeIdApi (orgId, projectId, workspaceId, services) {
     const credentialType = SERVICE_TYPE_ADOBEID
     const credentialId = await this.getWorkspaceAdobeIdCredentials(orgId, projectId, workspaceId)
-    const servicesInfo = this.getServicesInfo(orgId, services)
+    const servicesInfo = await this.getServicesInfo(orgId, services)
     await this.subscribeAPIS(orgId, projectId, workspaceId, credentialType, credentialId, servicesInfo)
   }
 

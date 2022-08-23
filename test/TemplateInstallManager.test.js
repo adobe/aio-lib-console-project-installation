@@ -156,8 +156,30 @@ describe('TemplateInstallManager', () => {
     mockConsoleSDKInstance.getCredentials.mockResolvedValueOnce({ body: [] })
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    expect.assertions(2)
+    expect.assertions(6)
     await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+
+    const adobeidServicesInfo = [{ licenseConfigs: null, name: 'API Mesh for Adobe Developer App Builder', roles: null, sdkCode: 'GraphQLServiceSDK' }, { licenseConfigs: null, name: 'Sixth SDK', roles: null, sdkCode: 'sixthSDK' }]
+    const entpServicesInfo = [{
+      licenseConfigs: [{ id: '0123456', op: 'add', productId: 'AAAAACCCCCCVV2EEEEE1E' }, { id: '0123457', op: 'add', productId: 'AAAAACCCCCCVV2EEEEE1E' }],
+      name: 'First SDK',
+      roles: [{ code: 'ent_somerole', id: 1000, name: null }, { code: 'ent_role_a', id: 1100, name: null }],
+      sdkCode: 'AssetComputeSDK'
+    },
+    {
+      licenseConfigs: [{ id: '1234567', op: 'add', productId: 'AAAAABBBBBVV2VVEEE1E' }, { id: '7654321', op: 'add', productId: 'AAAAABBBBBVV2VVEEE1E' }],
+      name: 'Second SDK',
+      roles: [{ code: 'ent_someotherrole', id: 1001, name: null }, { code: 'ent_someotherrole', id: 1002, name: null }],
+      sdkCode: 'secondSDK'
+    }]
+
+    // Production workspace
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111111', 'entp', '222222', entpServicesInfo)
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111111', 'adobeid', '44444', adobeidServicesInfo)
+
+    // Staging workspace
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111112', 'entp', '222222', entpServicesInfo)
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111112', 'adobeid', '44444', adobeidServicesInfo)
     expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledTimes(10)
   })
 
