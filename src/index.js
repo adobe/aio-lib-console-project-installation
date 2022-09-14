@@ -46,5 +46,6 @@ async function init (accessToken, templateConfigurationFile) {
 }
 
 module.exports = {
-  init
+  init,
+  getConsoleTemplateDependencies: configurationHandler.getConsoleTemplateDependencies
 }
