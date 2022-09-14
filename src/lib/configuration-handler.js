@@ -91,8 +91,33 @@ function loadAndValidate (fileOrBuffer) {
   return res
 }
 
+/**
+ * Returns information about template dependencies that should be met by Adobe Console project workspaces.
+ * For example:
+ * { runtime: true, apis: [{ code: 'GraphQLServiceSDK' }, { code: 'AssetComputeSDK' }] }
+ *
+ * @param {string} templateConfigurationFile a path to the config file
+ * @returns {object} an object with properties `runtime` and `apis`
+ */
+function getConsoleTemplateDependencies (templateConfigurationFile) {
+  const data = load(templateConfigurationFile).values
+  // default values
+  const info = {
+    runtime: false,
+    apis: []
+  }
+  if (Object.prototype.hasOwnProperty.call(data, 'runtime')) {
+    info.runtime = data.runtime
+  }
+  if (Object.prototype.hasOwnProperty.call(data, 'apis')) {
+    info.apis = data.apis
+  }
+  return info
+}
+
 module.exports = {
   load: load,
   validate: validate,
-  loadAndValidate: loadAndValidate
+  loadAndValidate: loadAndValidate,
+  getConsoleTemplateDependencies
 }
