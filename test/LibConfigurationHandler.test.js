@@ -83,15 +83,15 @@ describe('LibConfigurationHandler', () => {
     expect(templateConfiguration).toEqual(expectedOutput)
   })
 
-  test('Validate getting template dependencies from the configuration file', () => {
-    const templateDependencies = LibConfigurationHandler.getConsoleTemplateDependencies(path.join(__dirname, '/fixtures/templateConfig-console-multiple-apis.yaml'))
+  test('Validate getting services required by a template from the configuration file', () => {
+    const templateRequiredServices = LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-console-multiple-apis.yaml'))
     const expectedOutput = { runtime: true, apis: [{ code: 'GraphQLServiceSDK' }, { code: 'sixthSDK' }, { code: 'AssetComputeSDK' }, { code: 'secondSDK' }] }
-    expect(templateDependencies).toEqual(expectedOutput)
+    expect(templateRequiredServices).toEqual(expectedOutput)
   })
 
-  test('Validate getting template dependencies from the configuration file with no dependencies specified', () => {
-    const templateDependencies = LibConfigurationHandler.getConsoleTemplateDependencies(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+  test('Validate getting services required by a template from the configuration file with no services specified', () => {
+    const templateRequiredServices = LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
     const expectedOutput = { runtime: false, apis: [] }
-    expect(templateDependencies).toEqual(expectedOutput)
+    expect(templateRequiredServices).toEqual(expectedOutput)
   })
 })
