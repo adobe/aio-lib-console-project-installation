@@ -82,4 +82,16 @@ describe('LibConfigurationHandler', () => {
     const expectedOutput = JSON.parse('{ "values": {}, "format": "json" }')
     expect(templateConfiguration).toEqual(expectedOutput)
   })
+
+  test('Validate getting services required by a template from the configuration file', () => {
+    const templateRequiredServices = LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-console-multiple-apis.yaml'))
+    const expectedOutput = { runtime: true, apis: [{ code: 'GraphQLServiceSDK' }, { code: 'sixthSDK' }, { code: 'AssetComputeSDK' }, { code: 'secondSDK' }] }
+    expect(templateRequiredServices).toEqual(expectedOutput)
+  })
+
+  test('Validate getting services required by a template from the configuration file with no services specified', () => {
+    const templateRequiredServices = LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+    const expectedOutput = { runtime: false, apis: [] }
+    expect(templateRequiredServices).toEqual(expectedOutput)
+  })
 })
