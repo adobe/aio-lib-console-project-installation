@@ -1,6 +1,6 @@
 {
     "name": "@adobe/aio-lib-console-project-installation",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "description": "A library to configure Adobe Console Projects from a file.",
     "scripts": {
         "test": "npm run lint:check && jest --ci",
@@ -30,15 +30,16 @@
         "fs-extra": "^10.1.0",
         "hjson": "^3.2.2",
         "js-yaml": "^4.1.0",
-        "tmp": "^0.2.1"
+        "tmp": "^0.2.1",
+        "typescript": "^4.8.4"
     },
     "engines": {
         "node": "^14 || ^16"
     },
     "devDependencies": {
-        "@adobe/eslint-config-aio-lib-config": "^1.4.0",
+        "@adobe/eslint-config-aio-lib-config": "^2.0.0",
         "@jest/globals": "^28.1.1",
-        "eslint": "^7.32.0",
+        "eslint": "^8.0.1",
         "eslint-config-standard": "^17.0.0",
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-jest": "^23.20.0",
