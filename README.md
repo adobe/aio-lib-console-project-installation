@@ -67,28 +67,29 @@ const templateManager = await templateHandler.init(accessToken, installConfigFil
 ## Functions
 
 <dl>
-<dt><a href="#validate">validate(configJson)</a> ⇒ <code>object</code></dt>
+<dt><a href="#validate">validate(configJson, pretty)</a> ⇒ <code>object</code></dt>
 <dd><p>Validate the config json</p>
 </dd>
 <dt><a href="#load">load(fileOrBuffer)</a> ⇒ <code>object</code></dt>
 <dd><p>Load a config file</p>
 </dd>
-<dt><a href="#loadAndValidate">loadAndValidate(fileOrBuffer)</a> ⇒ <code>object</code></dt>
+<dt><a href="#loadAndValidate">loadAndValidate(fileOrBuffer, pretty)</a> ⇒ <code>object</code></dt>
 <dd><p>Load and validate a config file</p>
 </dd>
 </dl>
 
 <a name="validate"></a>
 
-## validate(configJson) ⇒ <code>object</code>
+## validate(configJson, pretty) ⇒ <code>object</code>
 Validate the config json
 
 **Kind**: global function  
 **Returns**: <code>object</code> - with keys valid (boolean) and errors (object). errors is null if no errors  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| configJson | <code>object</code> | the json to validate |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| configJson | <code>object</code> |  | the json to validate |
+| pretty | <code>boolean</code> | <code>false</code> | return prettified errors |
 
 <a name="load"></a>
 
@@ -104,15 +105,16 @@ Load a config file
 
 <a name="loadAndValidate"></a>
 
-## loadAndValidate(fileOrBuffer) ⇒ <code>object</code>
+## loadAndValidate(fileOrBuffer, pretty) ⇒ <code>object</code>
 Load and validate a config file
 
 **Kind**: global function  
 **Returns**: <code>object</code> - object with properties `value` and `format`  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| fileOrBuffer | <code>string</code> | the path to the config file or a Buffer |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| fileOrBuffer | <code>string</code> |  | the path to the config file or a Buffer |
+| pretty | <code>boolean</code> | <code>false</code> | return prettified errors |
 
 ### Debug Logs
 

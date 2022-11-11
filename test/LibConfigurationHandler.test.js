@@ -94,4 +94,11 @@ describe('LibConfigurationHandler', () => {
     const expectedOutput = { runtime: false, apis: [] }
     expect(templateRequiredServices).toEqual(expectedOutput)
   })
+
+  test('Unsuccessfully validate a YAML installation configuration file with typo in categories. Use pretty flag and see a suggestion.', async () => {
+    const fixturePath = path.join(__dirname, '/fixtures/templateConfig-typo-categories.yaml')
+    expect(() => {
+      LibConfigurationHandler.loadAndValidate(fixturePath, true)
+    }).toThrow('Did you mean action?')
+  })
 })

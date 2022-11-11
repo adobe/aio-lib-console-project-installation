@@ -14,14 +14,16 @@ const fs = require('fs-extra')
 const hjson = require('hjson')
 const path = require('path')
 const yaml = require('js-yaml')
+const betterAjvErrors = require('better-ajv-errors').default
 
 /**
  * Validate the config json
  *
  * @param {object} configJson the json to validate
+ * @param {boolean} pretty return prettified errors
  * @returns {object} with keys valid (boolean) and errors (object). errors is null if no errors
  */
-function validate (configJson) {
+function validate (configJson, pretty = false) {
   /* eslint-disable-next-line node/no-unpublished-require */
   const schema = require('../../schema/template.schema.json')
   const ajv = new Ajv({ allErrors: true })
@@ -36,7 +38,7 @@ function validate (configJson) {
 
   const validate = ajv.compile(schema)
 
-  return { valid: validate(configJson), errors: validate.errors }
+  return { valid: validate(configJson), errors: pretty ? betterAjvErrors(schema, configJson, validate.errors, { format: 'js' }) : validate.errors }
 }
 
 /**
@@ -79,11 +81,12 @@ function load (fileOrBuffer) {
  * Load and validate a config file
  *
  * @param {string} fileOrBuffer the path to the config file or a Buffer
+ * @param {boolean} pretty return prettified errors
  * @returns {object} object with properties `value` and `format`
  */
-function loadAndValidate (fileOrBuffer) {
+function loadAndValidate (fileOrBuffer, pretty = false) {
   const res = load(fileOrBuffer)
-  const { valid: configIsValid, errors: configErrors } = validate(res.values)
+  const { valid: configIsValid, errors: configErrors } = validate(res.values, pretty)
   if (!configIsValid) {
     const message = `Missing or invalid keys in config: ${JSON.stringify(configErrors, null, 2)}`
     throw new Error(message)
@@ -116,8 +119,8 @@ function getTemplateRequiredServices (templateConfigurationFile) {
 }
 
 module.exports = {
-  load: load,
-  validate: validate,
-  loadAndValidate: loadAndValidate,
+  load,
+  validate,
+  loadAndValidate,
   getTemplateRequiredServices
 }
