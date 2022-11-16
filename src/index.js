@@ -51,9 +51,9 @@ async function init (accessToken, templateConfigurationFile) {
 
 /**
  *
- * @param {string} templateConfigurationFile Path or buffer of configuration file
- * @param {boolean} pretty Prettify errors
- * @returns {object} object with validation results
+ * @param {string} templateConfigurationFile The path to the configuration file.
+ * @param {boolean} pretty Prettify errors.
+ * @returns {object} Object with properties `valid`, `configuration` and `errors`
  */
 async function validate (templateConfigurationFile, pretty = false) {
   const configurationObject = configurationHandler.load(templateConfigurationFile)

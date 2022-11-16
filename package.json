@@ -6,7 +6,7 @@
         "test": "npm run lint:check && jest --ci",
         "lint:check": "eslint --ext .js .",
         "lint:fix": "eslint --ext .js --fix .",
-        "jsdoc": "jsdoc2md -t ./docs/readme_template.md src/**/*.js > README.md"
+        "jsdoc": "jsdoc2md -t ./docs/readme_template.md src/index.js > README.md"
     },
     "repository": {
         "type": "git",

@@ -21,7 +21,7 @@ const betterAjvErrors = require('better-ajv-errors').default
  *
  * @param {object} configJson the json to validate
  * @param {boolean} pretty return prettified errors
- * @returns {object} object with validation results
+ * @returns {object} object with properties `valid`, `configuration` and `errors`
  */
 function validate (configJson, pretty = false) {
   /* eslint-disable-next-line node/no-unpublished-require */
