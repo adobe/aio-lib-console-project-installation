@@ -65,14 +65,14 @@ const templateManager = await templateHandler.init(accessToken, installConfigFil
 ```
 
 #### Template validation
-You can use this library to validate the `install.yaml` file.
+You can use this library to validate the App Builder application `install.yaml` file.
 ```javascript
 const templateHandler = require('@adobe/aio-lib-console-project-installation')
 
 const pathToInstallConfigFile = 'install.yml'
 
 // Second parameter is optional. Set it to `true` if you want to get prettified errors.
-const templateManager = await templateHandler.validate(pathToInstallConfigFile, true)
+const { valid, errors } = await templateHandler.validate(path, true)
 ```
 
 ## Functions
