@@ -51,6 +51,15 @@ describe('index', () => {
     await expect(templateHandler.init(accessToken, fixturePath)).rejects.toThrow()
   })
 
+  test('Configifuration is invalid', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Instantiate App Builder Template Manager
+    const fixturePath = path.join(__dirname, '/fixtures/templateConfig-minimum-invalid-keys.yaml')
+    await expect(templateHandler.init(accessToken, fixturePath)).rejects.toThrow()
+  })
+
   test('Config file path is a directory', async () => {
     // Instantiate Adobe Developer Console SDK
     const accessToken = await getToken(CLI)
@@ -58,5 +67,11 @@ describe('index', () => {
     // Instantiate App Builder Template Manager
     const fixturePath = path.join(__dirname, '/fixtures/')
     await expect(templateHandler.init(accessToken, fixturePath)).rejects.toThrow()
+  })
+
+  test('Load and validate YAML configuration', async () => {
+    const templateConfiguration = await templateHandler.validate(path.join(__dirname, '/fixtures/templateConfig-full-valid.yaml'))
+    const expectedOutput = JSON.parse('{"$id":"https://adobe.io/schemas/app-builder-templates/1","$schema":"http://json-schema.org/draft-07/schema","categories":["ui","action"],"extensions":[{"extensionPointId":"dx/excshell/1"}],"env":{"envKey1":"envValue1","envKey2":"envValue2"},"workspaces":["Stage","Production"],"apis":[{"code":"CC SDK","name":"Creative SDK"},{"code":"StockSDK","name":"Adobe Stock SDK"}],"runtime":false,"event":{"consumer":{"type":"some-type","provider":["event-type-1","event-type-2"]},"provider":{"name":"provider-name","description":"provider-description","event-types":["event-type-1","event-type-2"]}}}')
+    expect(templateConfiguration.configuration).toEqual(expectedOutput)
   })
 })

@@ -21,7 +21,7 @@ const betterAjvErrors = require('better-ajv-errors').default
  *
  * @param {object} configJson the json to validate
  * @param {boolean} pretty return prettified errors
- * @returns {object} with keys valid (boolean) and errors (object). errors is null if no errors
+ * @returns {object} object with validation results
  */
 function validate (configJson, pretty = false) {
   /* eslint-disable-next-line node/no-unpublished-require */
@@ -38,7 +38,7 @@ function validate (configJson, pretty = false) {
 
   const validate = ajv.compile(schema)
 
-  return { valid: validate(configJson), errors: pretty ? betterAjvErrors(schema, configJson, validate.errors, { format: 'js' }) : validate.errors }
+  return { valid: validate(configJson), configuration: configJson, errors: pretty ? betterAjvErrors(schema, configJson, validate.errors, { format: 'js' }) : validate.errors }
 }
 
 /**
@@ -78,23 +78,6 @@ function load (fileOrBuffer) {
 }
 
 /**
- * Load and validate a config file
- *
- * @param {string} fileOrBuffer the path to the config file or a Buffer
- * @param {boolean} pretty return prettified errors
- * @returns {object} object with properties `value` and `format`
- */
-function loadAndValidate (fileOrBuffer, pretty = false) {
-  const res = load(fileOrBuffer)
-  const { valid: configIsValid, errors: configErrors } = validate(res.values, pretty)
-  if (!configIsValid) {
-    const message = `Missing or invalid keys in config: ${JSON.stringify(configErrors, null, 2)}`
-    throw new Error(message)
-  }
-  return res
-}
-
-/**
  * Returns services required by a template.
  * For example:
  * { runtime: true, apis: [{ code: 'GraphQLServiceSDK' }, { code: 'AssetComputeSDK' }] }
@@ -121,6 +104,5 @@ function getTemplateRequiredServices (templateConfigurationFile) {
 module.exports = {
   load,
   validate,
-  loadAndValidate,
   getTemplateRequiredServices
 }

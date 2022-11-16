@@ -41,11 +41,27 @@ async function init (accessToken, templateConfigurationFile) {
   }
 
   // Load and validate the configuration file
-  const templateConfiguration = configurationHandler.loadAndValidate(templateConfigurationFile)
-  return new TemplateInstallManager(consoleClient, templateConfiguration.values)
+  const { valid: configIsValid, configuration, errors: configErrors } = await validate(templateConfigurationFile, false)
+  if (!configIsValid) {
+    const message = `Missing or invalid keys in config: ${JSON.stringify(configErrors, null, 2)}`
+    throw new Error(message)
+  }
+  return new TemplateInstallManager(consoleClient, configuration)
+}
+
+/**
+ *
+ * @param {string} templateConfigurationFile Path or buffer of configuration file
+ * @param {boolean} pretty Prettify errors
+ * @returns {object} object with validation results
+ */
+async function validate (templateConfigurationFile, pretty = false) {
+  const configurationObject = configurationHandler.load(templateConfigurationFile)
+  return configurationHandler.validate(configurationObject.values, pretty)
 }
 
 module.exports = {
   init,
+  validate,
   getTemplateRequiredServices: configurationHandler.getTemplateRequiredServices
 }
