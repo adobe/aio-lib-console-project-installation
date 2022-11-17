@@ -64,55 +64,50 @@ const templateManager = await templateHandler.init(accessToken, installConfigFil
   }
 ```
 
+#### Template validation
+You can use this library to validate the App Builder application `install.yaml` file.
+```javascript
+const templateHandler = require('@adobe/aio-lib-console-project-installation')
+
+const pathToInstallConfigFile = 'install.yml'
+
+// Second parameter is optional. Set it to `true` if you want to get prettified errors.
+const { valid, errors } = await templateHandler.validate(path, true)
+```
+
 ## Functions
 
 <dl>
-<dt><a href="#validate">validate(configJson)</a> ⇒ <code>object</code></dt>
-<dd><p>Validate the config json</p>
+<dt><a href="#init">init(accessToken, templateConfigurationFile)</a> ⇒ <code>TemplateInstallManager</code></dt>
+<dd><p>Returns a new TemplateInstallManager object.</p>
 </dd>
-<dt><a href="#load">load(fileOrBuffer)</a> ⇒ <code>object</code></dt>
-<dd><p>Load a config file</p>
-</dd>
-<dt><a href="#loadAndValidate">loadAndValidate(fileOrBuffer)</a> ⇒ <code>object</code></dt>
-<dd><p>Load and validate a config file</p>
-</dd>
+<dt><a href="#validate">validate(templateConfigurationFile, pretty)</a> ⇒ <code>object</code></dt>
+<dd></dd>
 </dl>
+
+<a name="init"></a>
+
+## init(accessToken, templateConfigurationFile) ⇒ <code>TemplateInstallManager</code>
+Returns a new TemplateInstallManager object.
+
+**Kind**: global function  
+**Returns**: <code>TemplateInstallManager</code> - A new TemplateInstallManager object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| accessToken | <code>string</code> | The Adobe Console API client. |
+| templateConfigurationFile | <code>string</code> | The path to the configuration file. |
 
 <a name="validate"></a>
 
-## validate(configJson) ⇒ <code>object</code>
-Validate the config json
-
+## validate(templateConfigurationFile, pretty) ⇒ <code>object</code>
 **Kind**: global function  
-**Returns**: <code>object</code> - with keys valid (boolean) and errors (object). errors is null if no errors  
+**Returns**: <code>object</code> - Object with properties `valid`, `configuration` and `errors`  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| configJson | <code>object</code> | the json to validate |
-
-<a name="load"></a>
-
-## load(fileOrBuffer) ⇒ <code>object</code>
-Load a config file
-
-**Kind**: global function  
-**Returns**: <code>object</code> - object with properties `value` and `format`  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fileOrBuffer | <code>string</code> | the path to the config file or a Buffer |
-
-<a name="loadAndValidate"></a>
-
-## loadAndValidate(fileOrBuffer) ⇒ <code>object</code>
-Load and validate a config file
-
-**Kind**: global function  
-**Returns**: <code>object</code> - object with properties `value` and `format`  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| fileOrBuffer | <code>string</code> | the path to the config file or a Buffer |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| templateConfigurationFile | <code>string</code> |  | The path to the configuration file. |
+| pretty | <code>boolean</code> | <code>false</code> | Prettify errors. |
 
 ### Debug Logs
 

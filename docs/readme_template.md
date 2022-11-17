@@ -14,6 +14,19 @@ governing permissions and limitations under the License.
 
 # Adobe I/O Lib Console Project Installation
 
+This is an internal helper library to create and configure remote Developer Console resources, like services and credentials, based on a template's `install.yaml` configuration file.
+
+The following keys are supported in the `install.yaml` file:
+
+- `categories`: (Required) Categories are informational and at least one category must be defined. See a list of supported categories [here](https://git.corp.adobe.com/CNA/aio-template-support/blob/main/categories.json).
+- `workspaces`: (Optional) A list of workspace names to create. Runtime namespaces are added by default for each workspace, if the runtime key is set to true. Staging and Production workspaces are created by default if not defined.
+- `runtime`: (Optional) Defines whether Runtime should be configured for each workspace. If not defined, the default is `false`.
+- `apis`: (Optional) A list of Adobe services, identified by their SDK code required by the template to work. By default, all services are attached to all configured workspaces.
+
+> A note on `apis`:
+> Developer Console supports three types of services: AdobeIO, Enterprise and Analytics.
+> Currently, only AdobeIO and Enterprise services are supported for configuration by this library.
+
 ### Installing
 
 ```bash
@@ -49,6 +62,17 @@ const templateManager = await templateHandler.init(accessToken, installConfigFil
   } catch (e) {
     console.error(e)
   }
+```
+
+#### Template validation
+You can use this library to validate the App Builder application `install.yaml` file.
+```javascript
+const templateHandler = require('@adobe/aio-lib-console-project-installation')
+
+const pathToInstallConfigFile = 'install.yml'
+
+// Second parameter is optional. Set it to `true` if you want to get prettified errors.
+const { valid, errors } = await templateHandler.validate(path, true)
 ```
 
 {{>main-index~}}
