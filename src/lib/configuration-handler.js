@@ -86,7 +86,7 @@ async function load (fileOrBuffer) {
  * @returns {object} an object with properties `runtime` and `apis`
  */
 async function getTemplateRequiredServices (templateConfigurationFile) {
-  const data = await load(templateConfigurationFile).values
+  const data = (await load(templateConfigurationFile)).values
   // default values
   const info = {
     runtime: false,

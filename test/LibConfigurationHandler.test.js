@@ -33,52 +33,48 @@ describe('LibConfigurationHandler', () => {
 
   test('Unsuccessfully validate a JSON installation configuration file: Minimum example', async () => {
     const fixturePath = path.join(__dirname, '/fixtures/templateConfig-minimum-invalid.json')
-    expect(() => {
-      LibConfigurationHandler.load(fixturePath)
-    }).toThrow()
+    await expect(LibConfigurationHandler.load(fixturePath)).rejects.toBeInstanceOf(Error)
   })
 
   test('Unsuccessfully validate a YAML installation configuration file: Minimum example', async () => {
     const fixturePath = path.join(__dirname, '/fixtures/templateConfig-minimum-invalid.yaml')
-    expect(() => {
-      LibConfigurationHandler.load(fixturePath)
-    }).toThrow()
+    await expect(LibConfigurationHandler.load(fixturePath)).rejects.toBeInstanceOf(Error)
   })
 
   test('Successfully validate an empty YAML installation configuration file', async () => {
-    const templateConfiguration = LibConfigurationHandler.load(path.join(__dirname, '/fixtures/templateConfig-empty.yaml'))
+    const templateConfiguration = await LibConfigurationHandler.load(path.join(__dirname, '/fixtures/templateConfig-empty.yaml'))
     const expectedOutput = JSON.parse('{ "values": {}, "format": "json" }')
     expect(templateConfiguration).toEqual(expectedOutput)
   })
 
   test('Successfully validate a Buffer JSON installation configuration file: Minimum example', async () => {
     const buffer = Buffer.from('{}', 'utf-8')
-    const templateConfiguration = LibConfigurationHandler.load(buffer)
+    const templateConfiguration = await LibConfigurationHandler.load(buffer)
     const expectedOutput = JSON.parse('{ "values": {}, "format": "json" }')
     expect(templateConfiguration).toEqual(expectedOutput)
   })
 
   test('Successfully validate an empty JSON installation configuration file: Minimum example', async () => {
-    const templateConfiguration = LibConfigurationHandler.load()
+    const templateConfiguration = await LibConfigurationHandler.load()
     const expectedOutput = JSON.parse('{ "values": {}, "format": "json" }')
     expect(templateConfiguration).toEqual(expectedOutput)
   })
 
-  test('Validate getting services required by a template from the configuration file', () => {
-    const templateRequiredServices = LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-console-multiple-apis.yaml'))
+  test('Validate getting services required by a template from the configuration file', async () => {
+    const templateRequiredServices = await LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-console-multiple-apis.yaml'))
     const expectedOutput = { runtime: true, apis: [{ code: 'GraphQLServiceSDK' }, { code: 'sixthSDK' }, { code: 'AssetComputeSDK' }, { code: 'secondSDK' }] }
     expect(templateRequiredServices).toEqual(expectedOutput)
   })
 
-  test('Validate getting services required by a template from the configuration file with no services specified', () => {
-    const templateRequiredServices = LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
+  test('Validate getting services required by a template from the configuration file with no services specified', async () => {
+    const templateRequiredServices = await LibConfigurationHandler.getTemplateRequiredServices(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.yaml'))
     const expectedOutput = { runtime: false, apis: [] }
     expect(templateRequiredServices).toEqual(expectedOutput)
   })
 
   test('Unsuccessfully validate a YAML installation configuration file with typo in categories. Use pretty flag and see a suggestion.', async () => {
     const fixturePath = path.join(__dirname, '/fixtures/templateConfig-typo-categories.yaml')
-    const jsonConfig = LibConfigurationHandler.load(fixturePath)
+    const jsonConfig = await LibConfigurationHandler.load(fixturePath)
     const templateConfiguration = await LibConfigurationHandler.validate(jsonConfig.values, true)
     expect(templateConfiguration.valid).toEqual(false)
     expect(templateConfiguration.errors).toEqual(

@@ -56,7 +56,7 @@ async function init (accessToken, templateConfigurationFile) {
  * @returns {object} Object with properties `valid`, `configuration` and `errors`
  */
 async function validate (templateConfigurationFile, pretty = false) {
-  const configurationObject = configurationHandler.load(templateConfigurationFile)
+  const configurationObject = await configurationHandler.load(templateConfigurationFile)
   return configurationHandler.validate(configurationObject.values, pretty)
 }
 
