@@ -155,7 +155,7 @@ class TemplateInstallManager {
           (api.type !== SERVICE_TYPE_ENTERPRISE && api.type !== SERVICE_TYPE_ADOBEID) ||
           !serviceTypes.includes(api.type)
         )) {
-          const errorMessage = `Requested type "${api.type}" for API "${api.code}" is not supported. Supported service types are: ${[SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID].join(',')}`
+          const errorMessage = `Requested type "${api.type}" for API "${api.code}" is not supported.}`
           logger.error(errorMessage)
           throw new Error(errorMessage)
         }

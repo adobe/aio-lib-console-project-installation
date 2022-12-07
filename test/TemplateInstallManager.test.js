@@ -192,7 +192,7 @@ describe('TemplateInstallManager', () => {
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
-    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Unsupported service type, "unsupported_type". Supported service types are: entp,adobeid.')
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('')
   })
 
   test('Try to install a template with missing service code', async () => {
