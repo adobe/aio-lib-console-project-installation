@@ -91,17 +91,20 @@ class TemplateInstallManager {
   }
 
   // an app is installed to some workspace(s) based on user input instead of install.yml workspaces field
-  async installApp (orgId, projectId, workspaces) {
+  async installApp (orgId, projectId, workspacesId) {
     // project must be already created
 
     // Configure workspaces.
     const runtime = this.configuration.runtime === undefined ? false : this.configuration.runtime
-    await this.configureWorkspaces(orgId, projectId, runtime, workspaces)
+    await this.configureWorkspaces(orgId, projectId, runtime, workspacesId)
 
     const apis = this.configuration.apis
     if (apis) {
       await this.configureAPIs(orgId, projectId, apis)
     }
+
+    const consoleConfigs = await Promise.all(workspacesId.map(async wId => (await this.sdkClient.downloadWorkspaceJson(orgId, projectId, wId)).body))
+    return consoleConfigs
   }
 
   /**
