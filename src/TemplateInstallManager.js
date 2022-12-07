@@ -172,32 +172,55 @@ class TemplateInstallManager {
     for (const workspace of currentWorkspaces) {
       const workspaceId = workspace.id
 
+      // Note: A service can have multiple service codes, hence a single service code does not uniquely define a single service object.
+      // The strategy taken here is to install all services for a single code if the install.yml does not specify `type = entp | adobeid` field.
+      // see https://git.corp.adobe.com/CNA/aio-template-support/blob/main/services.json for examples (e.g. analytics)
       const enterpriseServices = []
       const adobeIdServices = []
       for (const api of apis) {
-        const service = orgServices.find(service => service.code === api.code)
-        if (service && service.enabled === true) {
-          const serviceType = service.type
-          switch (serviceType) {
-            case SERVICE_TYPE_ENTERPRISE: {
-              enterpriseServices.push(service.code)
-              break
-            }
-            case SERVICE_TYPE_ADOBEID: {
-              adobeIdServices.push(service.code)
-              break
-            }
-            default: {
-              const errorMessage = `Unsupported service type, "${serviceType}". Supported service types are: ${[SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID].join(',')}.`
-              logger.error(errorMessage)
-              throw new Error(errorMessage)
-            }
-          }
-        } else {
+        const servicesForCode = orgServices.filter(s => s.code === api.code)
+        const serviceTypes = servicesForCode.map(s => s.type)
+
+        if (servicesForCode.length === 0 || !servicesForCode.some(s => s.enabled)) {
           const errorMessage = `Service code "${api.code}" not found in the organization.`
           logger.error(errorMessage)
           throw new Error(errorMessage)
         }
+
+        if (api.type && (
+          (api.type !== SERVICE_TYPE_ENTERPRISE && api.type !== SERVICE_TYPE_ADOBEID) ||
+          !serviceTypes.includes(api.type)
+        )) {
+          const errorMessage = `Requested type "${api.type}" for API "${api.code}" is not supported. Supported service types are: ${[SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID].join(',')}`
+          logger.error(errorMessage)
+          throw new Error(errorMessage)
+        }
+
+        if (!serviceTypes.includes(SERVICE_TYPE_ENTERPRISE) && !serviceTypes.includes(SERVICE_TYPE_ADOBEID)) {
+          const errorMessage = `The service "${api.code}" is not supported for now.`
+          logger.error(errorMessage)
+          throw new Error(errorMessage)
+        }
+
+        servicesForCode.forEach(s => {
+          switch (s.type) {
+            case SERVICE_TYPE_ENTERPRISE: {
+              if (s.enabled) {
+                enterpriseServices.push(s.code)
+              }
+              break
+            }
+            case SERVICE_TYPE_ADOBEID: {
+              if (s.enabled) {
+                adobeIdServices.push(s.code)
+              }
+              break
+            }
+            default: {
+              logger.warn(`Note: skipping unsupported service type, ${s.type} for service ${s.code}.`)
+            }
+          }
+        })
       }
 
       // Onboard APIs
