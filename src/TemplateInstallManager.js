@@ -75,7 +75,7 @@ class TemplateInstallManager {
     // todo name is mandatory
     const { name, title, description } = createProjectDetails
 
-    const projects = (await this.sdkClient.getProjects(orgId)).body
+    const projects = (await this.sdkClient.getProjectsForOrg(orgId)).body
     const projectFound = projects.find(p => p.name === name)
 
     if (projectFound) {
