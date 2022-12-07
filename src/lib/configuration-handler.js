@@ -30,7 +30,7 @@ async function validate (configJson, pretty = false) {
 
   // Load all sub-schemas
   const subSchemasPath = path.resolve(__dirname, '../../schema/sub-schemas')
-  const subSchemas = await fs.readdir(subSchemasPath).filter(file => file.endsWith('.schema.json'))
+  const subSchemas = (await fs.readdir(subSchemasPath)).filter(file => file.endsWith('.schema.json'))
   subSchemas.forEach(schema => {
     const schemaData = require(subSchemasPath + '/' + schema)
     ajv.addSchema(schemaData)

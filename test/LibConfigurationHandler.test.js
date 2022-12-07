@@ -21,13 +21,13 @@ beforeEach(() => {
 describe('LibConfigurationHandler', () => {
   test('Successfully validate a JSON installation configuration file: Full example', async () => {
     const jsonConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '/fixtures/templateConfig-full-valid.json')))
-    const templateConfiguration = LibConfigurationHandler.validate(jsonConfig)
+    const templateConfiguration = await LibConfigurationHandler.validate(jsonConfig)
     expect(templateConfiguration.valid).toEqual(true)
   })
 
   test('Successfully validate a JSON installation configuration file: Minimum example', async () => {
     const jsonConfig = JSON.parse(fs.readFileSync(path.join(__dirname, '/fixtures/templateConfig-minimum-valid.json')))
-    const templateConfiguration = LibConfigurationHandler.validate(jsonConfig)
+    const templateConfiguration = await LibConfigurationHandler.validate(jsonConfig)
     expect(templateConfiguration.valid).toEqual(true)
   })
 
@@ -79,7 +79,7 @@ describe('LibConfigurationHandler', () => {
   test('Unsuccessfully validate a YAML installation configuration file with typo in categories. Use pretty flag and see a suggestion.', async () => {
     const fixturePath = path.join(__dirname, '/fixtures/templateConfig-typo-categories.yaml')
     const jsonConfig = LibConfigurationHandler.load(fixturePath)
-    const templateConfiguration = LibConfigurationHandler.validate(jsonConfig.values, true)
+    const templateConfiguration = await LibConfigurationHandler.validate(jsonConfig.values, true)
     expect(templateConfiguration.valid).toEqual(false)
     expect(templateConfiguration.errors).toEqual(
       expect.arrayContaining([
