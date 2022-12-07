@@ -23,14 +23,14 @@ const betterAjvErrors = require('better-ajv-errors').default
  * @param {boolean} pretty return prettified errors
  * @returns {object} object with properties `valid`, `configuration` and `errors`
  */
-function validate (configJson, pretty = false) {
+async function validate (configJson, pretty = false) {
   /* eslint-disable-next-line node/no-unpublished-require */
   const schema = require('../../schema/template.schema.json')
   const ajv = new Ajv({ allErrors: true })
 
   // Load all sub-schemas
   const subSchemasPath = path.resolve(__dirname, '../../schema/sub-schemas')
-  const subSchemas = fs.readdirSync(subSchemasPath).filter(file => file.endsWith('.schema.json'))
+  const subSchemas = await fs.readdir(subSchemasPath).filter(file => file.endsWith('.schema.json'))
   subSchemas.forEach(schema => {
     const schemaData = require(subSchemasPath + '/' + schema)
     ajv.addSchema(schemaData)
@@ -47,10 +47,10 @@ function validate (configJson, pretty = false) {
  * @param {string} fileOrBuffer the path to the config file or a Buffer
  * @returns {object} object with properties `value` and `format`
  */
-function load (fileOrBuffer) {
+async function load (fileOrBuffer) {
   let contents
   if (typeof fileOrBuffer === 'string') {
-    contents = fs.readFileSync(fileOrBuffer, 'utf-8')
+    contents = await fs.readFile(fileOrBuffer, 'utf-8')
   } else if (Buffer.isBuffer(fileOrBuffer)) {
     contents = fileOrBuffer.toString('utf-8')
   } else {
@@ -85,8 +85,8 @@ function load (fileOrBuffer) {
  * @param {string} templateConfigurationFile a path to the config file
  * @returns {object} an object with properties `runtime` and `apis`
  */
-function getTemplateRequiredServices (templateConfigurationFile) {
-  const data = load(templateConfigurationFile).values
+async function getTemplateRequiredServices (templateConfigurationFile) {
+  const data = await load(templateConfigurationFile).values
   // default values
   const info = {
     runtime: false,

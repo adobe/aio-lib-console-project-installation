@@ -9,7 +9,7 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-const fs = require('fs')
+const fs = require('fs').promises
 const sdk = require('@adobe/aio-lib-console')
 const env = require('@adobe/aio-lib-env')
 const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-console-project-installation:index', { level: process.env.LOG_LEVEL })
@@ -32,7 +32,7 @@ async function init (accessToken, templateConfigurationFile) {
 
   // Check if the configuration file exists
   try {
-    const fileStats = fs.statSync(templateConfigurationFile)
+    const fileStats = await fs.stat(templateConfigurationFile)
     if (!fileStats.isFile()) {
       throw new Error(`The configuration file ${templateConfigurationFile} does not exist.`)
     }

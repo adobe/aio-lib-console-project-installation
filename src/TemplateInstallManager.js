@@ -25,6 +25,8 @@ const SERVICE_INTEGRATION_TYPE_APIKEY = 'apikey'
 // supported platforms
 const SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY = 'apiKey'
 
+const PROJECT_TYPE = 'jaeger'
+
 /**
  * This class provides methods to configure Adobe Developer Console Projects from a configuration file.
  */
@@ -52,12 +54,49 @@ class TemplateInstallManager {
   async installTemplate (orgId, projectId) {
     // Configure workspaces.
     const runtime = this.configuration.runtime === undefined ? false : this.configuration.runtime
-    const workspaces = this.configuration.workspaces
-    if (workspaces) {
-      await this.configureWorkspaces(orgId, projectId, runtime, workspaces)
-    } else {
-      await this.configureWorkspaces(orgId, projectId, runtime)
+
+    const workspaces = this.configuration.workspaces || []
+    // If not declared, 'Stage' and 'Production' workspaces are implied.
+    if (!workspaces.includes('Stage')) {
+      workspaces.push('Stage')
     }
+    if (!workspaces.includes('Production')) {
+      workspaces.push('Production')
+    }
+    await this.configureWorkspaces(orgId, projectId, runtime, workspaces)
+
+    const apis = this.configuration.apis
+    if (apis) {
+      await this.configureAPIs(orgId, projectId, apis)
+    }
+  }
+
+  async getOrCreateProject (orgId, createProjectDetails = {}) {
+    // todo name is mandatory
+    const { name, title, description } = createProjectDetails
+
+    const projects = (await this.sdkClient.getProjects(orgId)).body
+    const projectFound = projects.find(p => p.name === name)
+
+    if (projectFound) {
+      return projectFound
+    }
+
+    const createdProject = (await this.sdkClient.createProject(
+      orgId,
+      { name, title: title || name + ' project', description, type: PROJECT_TYPE }
+    )).body
+
+    return createdProject
+  }
+
+  // an app is installed to some workspace(s) based on user input instead of install.yml workspaces field
+  async installApp (orgId, projectId, workspaces) {
+    // project must be already created
+
+    // Configure workspaces.
+    const runtime = this.configuration.runtime === undefined ? false : this.configuration.runtime
+    await this.configureWorkspaces(orgId, projectId, runtime, workspaces)
 
     const apis = this.configuration.apis
     if (apis) {
@@ -83,16 +122,7 @@ class TemplateInstallManager {
    * @param {boolean} runtimeEnabled Whether to add runtime namespaces to all workspaces.
    * @param {Array<string>} workspaces The workspaces to configure.
    */
-  async configureWorkspaces (orgId, projectId, runtimeEnabled, workspaces = ['Stage', 'Production']) {
-    // If not declared, 'Stage' and 'Production' workspaces are implied.
-    if (!workspaces.includes('Stage')) {
-      workspaces.push('Stage')
-    }
-
-    if (!workspaces.includes('Production')) {
-      workspaces.push('Production')
-    }
-
+  async configureWorkspaces (orgId, projectId, runtimeEnabled, workspaces) {
     // Get current workspaces for the project.
     const currentWorkspaces = (await this.sdkClient.getWorkspacesForProject(orgId, projectId)).body
     // Check if workspaces exist.
