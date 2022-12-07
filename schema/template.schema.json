@@ -95,9 +95,6 @@
         "properties": {
           "code": {
             "type": "string"
-          },
-          "type": {
-            "type": "string"
           }
         }
       }
