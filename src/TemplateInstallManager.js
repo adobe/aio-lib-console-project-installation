@@ -71,15 +71,16 @@ class TemplateInstallManager {
     }
   }
 
-  async getOrCreateProject (orgId, createProjectDetails = {}) {
+  // returns only the id
+  async getOrCreateProject (orgId, projectDetails = {}) {
     // todo name is mandatory
-    const { name, title, description } = createProjectDetails
+    const { name, title, description } = projectDetails
 
     const projects = (await this.sdkClient.getProjectsForOrg(orgId)).body
     const projectFound = projects.find(p => p.name === name)
 
     if (projectFound) {
-      return projectFound
+      return projectFound.id
     }
 
     const createdProject = (await this.sdkClient.createProject(
@@ -87,7 +88,8 @@ class TemplateInstallManager {
       { name, title: title || name + ' project', description, type: PROJECT_TYPE }
     )).body
 
-    return createdProject
+    // note the difference in the project object found vs created (id vs projectId)
+    return createdProject.projectId
   }
 
   // an app is installed to some workspace(s) based on user input instead of install.yml workspaces field
