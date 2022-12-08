@@ -36,7 +36,7 @@
     "$id",
     "categories"
   ],
-  "additionalProperties": false,
+  "additionalProperties": true,
   "definitions": {
     "$schema": {
       "type": "string"
