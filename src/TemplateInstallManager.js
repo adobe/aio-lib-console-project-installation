@@ -72,15 +72,23 @@ class TemplateInstallManager {
   }
 
   // returns only the id
-  async getOrCreateProject (orgId, projectDetails = {}) {
+  // if projectId exists, returns id
+  // if project with proposed name already exists, errors... 
+  // else makes a new project
+  async getOrCreateProject ({orgId, projectId, projectDetails = { }}) {
     // todo name is mandatory
     const { name, title, description } = projectDetails
+
+    if (projectId) {
+      const project = (await this.sdkClient.getProject(orgId, projectId)).body
+      return project.id
+    }
 
     const projects = (await this.sdkClient.getProjectsForOrg(orgId)).body
     const projectFound = projects.find(p => p.name === name)
 
     if (projectFound) {
-      return projectFound.id
+      throw new Error(`Project with name ${name} already exists.`)
     }
 
     const createdProject = (await this.sdkClient.createProject(
