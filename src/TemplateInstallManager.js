@@ -252,10 +252,8 @@ class TemplateInstallManager {
     let credentialId = credential && credential.id_integration
     if (!credentialId) {
       const ts = new Date().getTime()
-      // though "redirectUriList" and "defaultRedirectUri" are not needed for the AdobeID APIKEY authorisation mechanism, it is better to provide them to avoid any possible validation issues on the Console side
-      const redirectUriList = ['https://adobe.com']
-      const defaultRedirectUri = 'https://adobe.com'
-      const adobeIdCredential = (await this.sdkClient.createAdobeIdCredential(orgId, projectId, workspaceId, { name: `AdobeId Credentials ${ts}`, description: 'AdobeId Credentials', platform: SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY, redirectUriList, defaultRedirectUri })).body
+      const domain = 'www.graph.adobe.io'
+      const adobeIdCredential = (await this.sdkClient.createAdobeIdCredential(orgId, projectId, workspaceId, { name: `AdobeId Credentials ${ts}`, description: 'AdobeId Credentials', platform: SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY, domain })).body
       credentialId = adobeIdCredential.id
     }
 
