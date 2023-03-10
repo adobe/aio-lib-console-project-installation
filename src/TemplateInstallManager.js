@@ -252,7 +252,8 @@ class TemplateInstallManager {
     let credentialId = credential && credential.id_integration
     if (!credentialId) {
       const ts = new Date().getTime()
-      const adobeIdCredential = (await this.sdkClient.createAdobeIdCredential(orgId, projectId, workspaceId, { name: `AdobeId Credentials ${ts}`, description: 'AdobeId Credentials', platform: SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY })).body
+      const domain = 'www.graph.adobe.io'
+      const adobeIdCredential = (await this.sdkClient.createAdobeIdCredential(orgId, projectId, workspaceId, { name: `AdobeId Credentials ${ts}`, description: 'AdobeId Credentials', platform: SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY, domain })).body
       credentialId = adobeIdCredential.id
     }
 
