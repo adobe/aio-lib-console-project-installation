@@ -252,7 +252,7 @@ class TemplateInstallManager {
     let credentialId = credential && credential.id_integration
     if (!credentialId) {
       const ts = new Date().getTime()
-      const domain = 'www.graph.adobe.io' // @todo a domain value should be configurable, as an option it can be defined in a template's install.yaml configuration file
+      const domain = 'www.graph.adobe.io' // @todo a domain value should be configurable, as an option it can be asked during a template installation process or defined in a template's install.yaml configuration file
       const adobeIdCredential = (await this.sdkClient.createAdobeIdCredential(orgId, projectId, workspaceId, { name: `AdobeId Credentials ${ts}`, description: 'AdobeId Credentials', platform: SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY, domain })).body
       credentialId = adobeIdCredential.id
     }
