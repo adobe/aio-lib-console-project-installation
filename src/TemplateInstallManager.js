@@ -10,16 +10,14 @@ governing permissions and limitations under the License.
 */
 
 const { CoreConsoleAPI } = require('@adobe/aio-lib-console')
-const cert = require('@adobe/aio-cli-plugin-certificate')
 const loggerNamespace = '@adobe/aio-lib-console-project-installation'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
-const fs = require('fs')
-const tmp = require('tmp')
 
 const SERVICE_TYPE_ENTERPRISE = 'entp'
 const SERVICE_TYPE_ADOBEID = 'adobeid'
 
 const SERVICE_INTEGRATION_TYPE_SERVICE = 'service'
+const SERVICE_INTEGRATION_TYPE_OAUTH = 'oauth_server_to_server'
 const SERVICE_INTEGRATION_TYPE_APIKEY = 'apikey'
 
 // supported platforms
@@ -182,7 +180,7 @@ class TemplateInstallManager {
    */
   async onboardEnterpriseApi (orgId, projectId, workspaceId, services) {
     const credentialType = SERVICE_TYPE_ENTERPRISE
-    const credentialId = await this.getWorkspaceEnterpriseCredentials(orgId, projectId, workspaceId)
+    const credentialId = await this.getFirstWorkspaceCredential(orgId, projectId, workspaceId)
     const servicesInfo = await this.getServicesInfo(orgId, services)
     await this.subscribeAPIS(orgId, projectId, workspaceId, credentialType, credentialId, servicesInfo)
   }
@@ -204,7 +202,7 @@ class TemplateInstallManager {
   }
 
   /**
-   * Get enterprise credentials for the workspace.
+   * Get workspace credential. If one doesn't exist, create an OAuth credential.
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
@@ -212,21 +210,52 @@ class TemplateInstallManager {
    * @returns {string} The credential ID.
    * @throws {Error} If the credentials cannot be retrieved.
    */
-  async getWorkspaceEnterpriseCredentials (orgId, projectId, workspaceId) {
-    const credentials = (await this.sdkClient.getCredentials(orgId, projectId, workspaceId)).body
-    const credential = credentials.find(c => c.flow_type === SERVICE_TYPE_ENTERPRISE && c.integration_type === SERVICE_INTEGRATION_TYPE_SERVICE)
-    let credentialId = credential && credential.id_integration
-    if (!credentialId) {
-      const keyPair = cert.generate('aio-lib-console-e2e', 365, { country: 'US', state: 'CA', locality: 'SF', organization: 'Adobe', unit: 'AdobeIO' })
-      const certFile = tmp.fileSync({ postfix: '.crt' })
-      fs.writeFileSync(certFile.fd, keyPair.cert)
-      const ts = new Date().getTime()
-      const credentialNameEntp = 'cred-entp' + ts
-      const credential = (await this.sdkClient.createEnterpriseCredential(orgId, projectId, workspaceId, fs.createReadStream(certFile.name), credentialNameEntp, 'Enterprise Credential')).body
-      credentialId = credential.id
+  async getFirstWorkspaceCredential (orgId, projectId, workspaceId) {
+    const jwtCredentialId = await this.getFirstWorkspaceEnterpriseCredential(orgId, projectId, workspaceId)
+    const oauthCredentialId = await this.getFirstWorkspaceOAuthCredential(orgId, projectId, workspaceId)
+
+    // Check for existing credentials, giving preference to OAuth credentials.
+    if (oauthCredentialId) {
+      return oauthCredentialId
+    } else if (jwtCredentialId) {
+      return jwtCredentialId
     }
 
-    return credentialId
+    // If there is no credential on the workspace, create an OAuth credential.
+    const ts = new Date().getTime()
+    const credentialNameOAuth = 'cred-oauth' + ts
+    const credential = (await this.sdkClient.createOAuthServerToServerCredential(orgId, projectId, workspaceId, credentialNameOAuth, 'Oauth Credential')).body
+    return credential.id
+  }
+
+  /**
+   * Get first OAuth credential for the workspace.
+   * @private
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {string} projectId The ID of the project to configure the APIs for.
+   * @param {string} workspaceId The ID of the workspace to get the credentials for.
+   * @returns {string} The credential ID.
+   * @throws {Error} If the credentials cannot be retrieved.
+   */
+  async getFirstWorkspaceOAuthCredential (orgId, projectId, workspaceId) {
+    const credentials = (await this.sdkClient.getCredentials(orgId, projectId, workspaceId)).body
+    const credential = credentials.find(c => c.flow_type === SERVICE_TYPE_ENTERPRISE && c.integration_type === SERVICE_INTEGRATION_TYPE_OAUTH)
+    return credential?.id_integration
+  }
+
+  /**
+   * Get first Enterprise credential for the workspace.
+   * @private
+   * @param {string} orgId The ID of the organization the project exists in.
+   * @param {string} projectId The ID of the project to configure the APIs for.
+   * @param {string} workspaceId The ID of the workspace to get the credentials for.
+   * @returns {string} The credential ID.
+   * @throws {Error} If the credentials cannot be retrieved.
+   */
+  async getFirstWorkspaceEnterpriseCredential (orgId, projectId, workspaceId) {
+    const credentials = (await this.sdkClient.getCredentials(orgId, projectId, workspaceId)).body
+    const credential = credentials.find(c => c.flow_type === SERVICE_TYPE_ENTERPRISE && c.integration_type === SERVICE_INTEGRATION_TYPE_SERVICE)
+    return credential?.id_integration
   }
 
   /**
