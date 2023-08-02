@@ -51,8 +51,7 @@ const mockConsoleSDKInstance = {
 consoleSDK.init.mockResolvedValue(mockConsoleSDKInstance)
 
 beforeEach(async () => {
-  jest.clearAllMocks() // clears the mock calls, instances, results, contexts
-  jest.resetAllMocks() // clears the implementation
+  jest.clearAllMocks()
   // Mock sdk calls
   mockConsoleSDKInstance.getWorkspacesForProject.mockResolvedValue({ body: dataMocks.workspaces })
   mockConsoleSDKInstance.getServicesForOrg.mockResolvedValue({ body: dataMocks.services })
