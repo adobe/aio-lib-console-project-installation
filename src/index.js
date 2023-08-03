@@ -18,7 +18,6 @@ const configurationHandler = require('./lib/configuration-handler')
 
 /**
  * Returns a new TemplateInstallManager object.
- *
  * @param {string} accessToken The Adobe Console API client.
  * @param {string} templateConfigurationFile The path to the configuration file.
  * @returns {TemplateInstallManager} A new TemplateInstallManager object.
@@ -50,7 +49,6 @@ async function init (accessToken, templateConfigurationFile) {
 }
 
 /**
- *
  * @param {string} templateConfigurationFile The path to the configuration file.
  * @param {boolean} pretty Prettify errors.
  * @returns {object} Object with properties `valid`, `configuration` and `errors`

@@ -31,7 +31,6 @@ const SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY = 'apiKey'
 class TemplateInstallManager {
   /**
    * Initializes an TemplateInstallManager object.
-   *
    * @param {CoreConsoleAPI} consoleClient The Adobe Console API client.
    * @param {object} configuration The template configuration object in JSON format. See the template.schema.json file for the schema.
    */
@@ -43,7 +42,6 @@ class TemplateInstallManager {
 
   /**
    * Installs the template.
-   *
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to install the template to.
    * @returns {Promise<void>} A promise that resolves when the template is installed.
@@ -76,7 +74,6 @@ class TemplateInstallManager {
    *
    * If Staging and Production workspaces are not listed as workspaces,
    * they are implied.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to install the template to.
@@ -123,7 +120,6 @@ class TemplateInstallManager {
 
   /**
    * Configure APIs required for the template.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
@@ -177,7 +173,6 @@ class TemplateInstallManager {
 
   /**
    * Onboards an Enterprise API to the workspace.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
@@ -194,7 +189,6 @@ class TemplateInstallManager {
 
   /**
    * Onboards an AdobeId API to the workspace.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
@@ -211,7 +205,6 @@ class TemplateInstallManager {
 
   /**
    * Get enterprise credentials for the workspace.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
@@ -238,7 +231,6 @@ class TemplateInstallManager {
 
   /**
    * Get adobeid credentials for the workspace.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.
@@ -262,7 +254,6 @@ class TemplateInstallManager {
 
   /**
    * Get Service Info for the Organization.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {Array} services A list of services to get the info for.
@@ -289,7 +280,6 @@ class TemplateInstallManager {
 
   /**
    * Subscribe an API to a workspace.
-   *
    * @private
    * @param {string} orgId The ID of the organization the project exists in.
    * @param {string} projectId The ID of the project to configure the APIs for.

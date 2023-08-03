@@ -18,7 +18,6 @@ const betterAjvErrors = require('better-ajv-errors').default
 
 /**
  * Validate the config json
- *
  * @param {object} configJson the json to validate
  * @param {boolean} pretty return prettified errors
  * @returns {object} object with properties `valid`, `configuration` and `errors`
@@ -43,7 +42,6 @@ function validate (configJson, pretty = false) {
 
 /**
  * Load a config file
- *
  * @param {string} fileOrBuffer the path to the config file or a Buffer
  * @returns {object} object with properties `value` and `format`
  */
@@ -81,7 +79,6 @@ function load (fileOrBuffer) {
  * Returns services required by a template.
  * For example:
  * { runtime: true, apis: [{ code: 'GraphQLServiceSDK' }, { code: 'AssetComputeSDK' }] }
- *
  * @param {string} templateConfigurationFile a path to the config file
  * @returns {object} an object with properties `runtime` and `apis`
  */

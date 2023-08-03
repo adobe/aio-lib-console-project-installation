@@ -174,12 +174,12 @@ describe('TemplateInstallManager', () => {
     }]
 
     // Production workspace
-    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111111', 'entp', '222222', entpServicesInfo)
-    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111111', 'adobeid', '44444', adobeidServicesInfo)
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledWith('343284', '4566206088344794932', '1111111111111111111', 'entp', '222222', entpServicesInfo)
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledWith('343284', '4566206088344794932', '1111111111111111111', 'adobeid', '44444', adobeidServicesInfo)
 
     // Staging workspace
-    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111112', 'entp', '222222', entpServicesInfo)
-    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toBeCalledWith('343284', '4566206088344794932', '1111111111111111112', 'adobeid', '44444', adobeidServicesInfo)
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledWith('343284', '4566206088344794932', '1111111111111111112', 'entp', '222222', entpServicesInfo)
+    expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledWith('343284', '4566206088344794932', '1111111111111111112', 'adobeid', '44444', adobeidServicesInfo)
     expect(mockConsoleSDKInstance.subscribeCredentialToServices).toHaveBeenCalledTimes(10)
   })
 
