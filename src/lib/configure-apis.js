@@ -32,7 +32,7 @@ const SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY = 'apiKey'
  * @param {object} params.productProfiles The product profiles to configure the services for.
  * [
  *  {
- *      "sdkCode": "CloudManagerSDK",
+ *      sdkCode: "CloudManagerSDK",
  *      licenseConfigs: [
  *         {
             “id”: “131094414”,
