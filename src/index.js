@@ -15,6 +15,7 @@ const env = require('@adobe/aio-lib-env')
 const logger = require('@adobe/aio-lib-core-logging')('@adobe/aio-lib-console-project-installation:index', { level: process.env.LOG_LEVEL })
 const TemplateInstallManager = require('./TemplateInstallManager.js')
 const configurationHandler = require('./lib/configuration-handler')
+const { configureAPIs } = require('./lib/configure-apis')
 
 /**
  * Returns a new TemplateInstallManager object.
@@ -61,5 +62,6 @@ async function validate (templateConfigurationFile, pretty = false) {
 module.exports = {
   init,
   validate,
-  getTemplateRequiredServices: configurationHandler.getTemplateRequiredServices
+  getTemplateRequiredServices: configurationHandler.getTemplateRequiredServices,
+  configureAPIs
 }
