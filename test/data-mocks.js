@@ -432,6 +432,30 @@ const integrations = [
   }
 ]
 
+const integrationsOAuthAndJwt = [
+  {
+    id_integration: '111111',
+    id_workspace: workspace.id,
+    integration_type: 'oauth_server_to_server',
+    flow_type: 'entp'
+  },
+  {
+    id_integration: '33333',
+    id_workspace: workspace.id,
+    integration_type: 'service',
+    flow_type: 'entp'
+  }
+]
+
+const integrationOAuth = [
+  {
+    id_integration: '111111',
+    id_workspace: workspace.id,
+    integration_type: 'oauth_server_to_server',
+    flow_type: 'entp'
+  }
+]
+
 // as returned by getIntegration
 const integration = {
   id: '222222',
@@ -477,8 +501,7 @@ const enhancedWorkspaceJson = {
 const integrationCreateResponse = {
   id: integration.id,
   apiKey: integration.apiKey,
-  orgId: integration.orgId,
-  technicalAccountId: integration.technicalAccountId
+  orgId: integration.orgId
 }
 
 // payload based on serviceProperties
@@ -586,6 +609,8 @@ module.exports = {
   workspace,
   integrations,
   integration,
+  integrationOAuth,
+  integrationsOAuthAndJwt,
   serviceProperties,
   services,
   servicesNoProperties,

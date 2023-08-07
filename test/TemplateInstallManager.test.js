@@ -35,7 +35,7 @@ const mockConsoleSDKInstance = {
   subscribeCredentialToServices: jest.fn(),
   getSDKProperties: jest.fn(),
   getIntegration: jest.fn(),
-  createEnterpriseCredential: jest.fn(),
+  createOAuthServerToServerCredential: jest.fn(),
   createAdobeIdCredential: jest.fn(),
   getCredentials: jest.fn(),
   getEndPointsInWorkspace: jest.fn(),
@@ -58,7 +58,7 @@ beforeEach(async () => {
   mockConsoleSDKInstance.getCredentials.mockResolvedValue({ body: dataMocks.integrations })
   mockConsoleSDKInstance.createRuntimeNamespace.mockResolvedValue({ body: dataMocks.runtimeNamespace })
   mockConsoleSDKInstance.createWorkspace.mockResolvedValue({ body: dataMocks.workspace })
-  mockConsoleSDKInstance.createEnterpriseCredential.mockResolvedValue({ body: dataMocks.integrationCreateResponse })
+  mockConsoleSDKInstance.createOAuthServerToServerCredential.mockResolvedValue({ body: dataMocks.integrationCreateResponse })
   mockConsoleSDKInstance.createAdobeIdCredential.mockResolvedValue({ body: dataMocks.integrationCreateResponse })
   mockConsoleSDKInstance.subscribeCredentialToServices.mockResolvedValue({ body: dataMocks.subscribeServicesResponse })
 })
@@ -111,6 +111,38 @@ describe('TemplateInstallManager', () => {
 
     // Instantiate App Builder Template Manager
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-workspaces.yaml'))
+
+    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    expect.assertions(1)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+  })
+
+  test('Successfully install a template, existing oauth creds', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Mock sdk calls
+    mockConsoleSDKInstance.getCredentials.mockResolvedValue({ body: dataMocks.integrationOAuth })
+    mockConsoleSDKInstance.getServicesForOrg.mockResolvedValue({ body: dataMocks.servicesNoProperties })
+
+    // Instantiate App Builder Template Manager
+    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-no-runtime.yaml'))
+
+    // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
+    expect.assertions(1)
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).resolves.toBeUndefined()
+  })
+
+  test('Successfully install a template, existing jwt and oauth creds', async () => {
+    // Instantiate Adobe Developer Console SDK
+    const accessToken = await getToken(CLI)
+
+    // Mock sdk calls
+    mockConsoleSDKInstance.getCredentials.mockResolvedValue({ body: dataMocks.integrationsOAuthAndJwt })
+    mockConsoleSDKInstance.getServicesForOrg.mockResolvedValue({ body: dataMocks.servicesNoProperties })
+
+    // Instantiate App Builder Template Manager
+    const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-no-runtime.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
