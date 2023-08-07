@@ -37,7 +37,6 @@ const SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY = 'apiKey'
  *         {
             “id”: “131094414”,
             “productId”: “8F5Z52CBD0V8PPA0MENP9DS0Y8”,
-            “op”: “add”,
             “name”: “standard - Cloud Manager - IO Integrations”
            }
  *      ]
