@@ -1,6 +1,6 @@
 {
     "name": "@adobe/aio-lib-console-project-installation",
-    "version": "2.2.2",
+    "version": "2.3.0",
     "description": "A library to configure Adobe Console Projects from a file.",
     "scripts": {
         "test": "npm run lint:check && jest --ci",
