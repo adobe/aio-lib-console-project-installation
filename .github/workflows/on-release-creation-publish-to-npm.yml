@@ -6,17 +6,5 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      # Setup .npmrc file to publish to npm
-      # See https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "18.x"
-          registry-url: "https://registry.npmjs.org"
-      - run: npm install
-      - run: npm test
-      - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.ADOBE_BOT_NPM_TOKEN }}
+    uses: adobe/aio-reusable-workflows/.github/workflows/on-release-creation-publish-to-npm.yml@main
+    secrets: inherit
