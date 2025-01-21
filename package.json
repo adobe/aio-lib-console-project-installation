@@ -25,7 +25,6 @@
         "@adobe/aio-lib-env": "^3",
         "@adobe/aio-lib-ims": "^7",
         "ajv": "^8.11.0",
-        "axios": "^0.27.2",
         "better-ajv-errors": "^1.2.0",
         "fs-extra": "^10.1.0",
         "hjson": "^3.2.2",
