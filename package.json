@@ -35,7 +35,7 @@
         "node": ">=18"
     },
     "devDependencies": {
-        "@adobe/eslint-config-aio-lib-config": "^2.0.2",
+        "@adobe/eslint-config-aio-lib-config": "^4.0.0",
         "@jest/globals": "^28.1.1",
         "eslint": "^8.56.0",
         "eslint-config-standard": "^17.1.0",
