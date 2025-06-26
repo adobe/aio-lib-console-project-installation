@@ -200,4 +200,34 @@ describe('configureAPIs', () => {
       ])
     )
   })
+
+  test('configures apis for multiple services with different credential types', async () => {
+    const consoleClient = await consoleSDK.init()
+    const apis = [
+      {
+        code: 'seventhSDK'
+      }
+    ]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      dataMocks.integration.type,
+      dataMocks.integration.id,
+      expect.arrayContaining([
+        expect.objectContaining({
+          sdkCode: 'seventhSDK',
+          licenseConfigs: null
+        })
+      ])
+    )
+  })
 })

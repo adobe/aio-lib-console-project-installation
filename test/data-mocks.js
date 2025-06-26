@@ -349,7 +349,36 @@ const services = [
     atlasDefaultPlanCode: null,
     properties: null,
     requiresApproval: false
+  },
+  {
+    name: 'Seventh SDK',
+    code: 'seventhSDK',
+    enabled: true,
+    type: 'unsupported_type',
+    platformList: null,
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
+  },
+  {
+    name: 'Seventh SDK',
+    code: 'seventhSDK',
+    enabled: true,
+    type: 'entp',
+    platformList: null,
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
   }
+
 ]
 
 const servicesNoProperties = [

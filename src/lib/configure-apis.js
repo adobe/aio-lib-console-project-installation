@@ -14,6 +14,7 @@ const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: 
 
 const SERVICE_TYPE_ENTERPRISE = 'entp'
 const SERVICE_TYPE_ADOBEID = 'adobeid'
+const SUPPORTED_SERVICE_TYPES = [SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID]
 
 const SERVICE_INTEGRATION_TYPE_SERVICE = 'service'
 const SERVICE_INTEGRATION_TYPE_OAUTH = 'oauth_server_to_server'
@@ -53,26 +54,25 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
     const enterpriseServices = []
     const adobeIdServices = []
     for (const api of apis) {
-      const service = orgServices.find(service => service.code === api.code)
-      if (service && service.enabled === true) {
-        const serviceType = service.type
-        switch (serviceType) {
-          case SERVICE_TYPE_ENTERPRISE: {
-            enterpriseServices.push(service.code)
-            break
-          }
-          case SERVICE_TYPE_ADOBEID: {
-            adobeIdServices.push(service.code)
-            break
-          }
-          default: {
-            const errorMessage = `Unsupported service type, "${serviceType}". Supported service types are: ${[SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID].join(',')}.`
-            logger.error(errorMessage)
-            throw new Error(errorMessage)
+      const services = orgServices.filter(
+        service => service.code === api.code && service.enabled === true && SUPPORTED_SERVICE_TYPES.includes(service.type)
+      )
+      if (services.length > 0) {
+        for (const service of services) {
+          const serviceType = service.type
+          switch (serviceType) {
+            case SERVICE_TYPE_ENTERPRISE: {
+              enterpriseServices.push(service.code)
+              break
+            }
+            case SERVICE_TYPE_ADOBEID: {
+              adobeIdServices.push(service.code)
+              break
+            }
           }
         }
       } else {
-        const errorMessage = `Service code "${api.code}" not found in the organization.`
+        const errorMessage = `Service code "${api.code}" with one of the following types ${SUPPORTED_SERVICE_TYPES.join(',')} not found in the organization.`
         logger.error(errorMessage)
         throw new Error(errorMessage)
       }
