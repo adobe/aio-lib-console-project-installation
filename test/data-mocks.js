@@ -321,6 +321,34 @@ const services = [
     requiresApproval: false
   },
   {
+    name: 'Seventh SDK',
+    code: 'seventhSDK',
+    enabled: true,
+    type: 'analytics',
+    platformList: null,
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
+  },
+  {
+    name: 'Seventh SDK',
+    code: 'seventhSDK',
+    enabled: true,
+    type: 'entp',
+    platformList: null,
+    docsUrl: null,
+    learnMoreUrl: null,
+    description: null,
+    atlasCollectionCode: null,
+    atlasDefaultPlanCode: null,
+    properties: null,
+    requiresApproval: false
+  },
+  {
     name: 'API Mesh for Adobe Developer App Builder',
     code: 'GraphQLServiceSDK',
     enabled: true,

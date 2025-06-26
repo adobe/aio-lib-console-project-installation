@@ -14,6 +14,7 @@ const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: 
 
 const SERVICE_TYPE_ENTERPRISE = 'entp'
 const SERVICE_TYPE_ADOBEID = 'adobeid'
+const SUPPORTED_SERVICE_TYPES = [SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID]
 
 const SERVICE_INTEGRATION_TYPE_SERVICE = 'service'
 const SERVICE_INTEGRATION_TYPE_OAUTH = 'oauth_server_to_server'
@@ -47,13 +48,13 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
   logger.debug(`apis to configure: ${JSON.stringify(apis)}`)
   const orgServices = (await consoleClient.getServicesForOrg(orgId)).body
   const currentWorkspaces = (await consoleClient.getWorkspacesForProject(orgId, projectId)).body
+  console.log('orgServices', orgServices)
   for (const workspace of currentWorkspaces) {
     const workspaceId = workspace.id
 
     const enterpriseServices = []
     const adobeIdServices = []
     for (const api of apis) {
-      const service = orgServices.find(service => service.code === api.code)
       if (service && service.enabled === true) {
         const serviceType = service.type
         switch (serviceType) {
@@ -66,7 +67,7 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
             break
           }
           default: {
-            const errorMessage = `Unsupported service type, "${serviceType}". Supported service types are: ${[SERVICE_TYPE_ENTERPRISE, SERVICE_TYPE_ADOBEID].join(',')}.`
+            const errorMessage = `Unsupported service type, "${serviceType}". Supported service types are: ${SUPPORTED_SERVICE_TYPES.join(',')}.`
             logger.error(errorMessage)
             throw new Error(errorMessage)
           }
