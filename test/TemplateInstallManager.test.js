@@ -224,7 +224,7 @@ describe('TemplateInstallManager', () => {
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
     expect.assertions(1)
-    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Unsupported service type, "unsupported_type". Supported service types are: entp,adobeid.')
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Service code "UnsupportedSDK" with one of the following types entp,adobeid not found in the organization.')
   })
 
   test('Try to install a template with missing service code', async () => {
@@ -235,7 +235,7 @@ describe('TemplateInstallManager', () => {
     const templateManager = await templateHandler.init(accessToken, path.join(__dirname, '/fixtures/templateConfig-console-api-service-code.yaml'))
 
     // Org: DevX Acceleration Prod, Project: Commerce IO Extensions
-    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Service code "CampaignSDK" not found in the organization.')
+    await expect(templateManager.installTemplate('343284', '4566206088344794932')).rejects.toThrow('Service code "CampaignSDK" with one of the following types entp,adobeid not found in the organization.')
   })
 
   test('Fail to subscribe API', async () => {
