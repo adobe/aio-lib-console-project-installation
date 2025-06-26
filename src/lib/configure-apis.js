@@ -48,7 +48,6 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
   logger.debug(`apis to configure: ${JSON.stringify(apis)}`)
   const orgServices = (await consoleClient.getServicesForOrg(orgId)).body
   const currentWorkspaces = (await consoleClient.getWorkspacesForProject(orgId, projectId)).body
-  console.log('orgServices', orgServices)
   for (const workspace of currentWorkspaces) {
     const workspaceId = workspace.id
 
@@ -56,6 +55,8 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
     const adobeIdServices = []
     for (const api of apis) {
       const service = orgServices.find(service => service.code === api.code)
+      console.log('orgId', orgId)
+      console.log('service', service)
       if (service && service.enabled === true) {
         const serviceType = service.type
         switch (serviceType) {
