@@ -47,7 +47,6 @@ const SERVICE_TYPE_ADOBEID_PLATFORM_APIKEY = 'apiKey'
 const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productProfiles }) => {
   logger.debug(`apis to configure: ${JSON.stringify(apis)}`)
   const orgServices = (await consoleClient.getServicesForOrg(orgId)).body
-  console.log('orgServices', orgServices)
   const currentWorkspaces = (await consoleClient.getWorkspacesForProject(orgId, projectId)).body
   for (const workspace of currentWorkspaces) {
     const workspaceId = workspace.id
