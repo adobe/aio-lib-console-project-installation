@@ -55,6 +55,7 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
     const enterpriseServices = []
     const adobeIdServices = []
     for (const api of apis) {
+      const service = orgServices.find(service => service.code === api.code)
       if (service && service.enabled === true) {
         const serviceType = service.type
         switch (serviceType) {
