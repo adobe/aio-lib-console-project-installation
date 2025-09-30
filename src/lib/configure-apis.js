@@ -101,8 +101,7 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
  * @returns {Promise<void>} A promise that resolves when the Enterprise API is onboarded.
  */
 const onboardEnterpriseApi = async ({ consoleClient, orgId, projectId, workspaceId, services, productProfiles }) => {
-  const credentialType = SERVICE_TYPE_ENTERPRISE
-  const credentialId = await getFirstWorkspaceCredential({ consoleClient, orgId, projectId, workspaceId })
+  const { credentialId, credentialType } = await getFirstWorkspaceCredential({ consoleClient, orgId, projectId, workspaceId })
   const servicesInfo = await getServicesInfo({ consoleClient, orgId, services, productProfilesFilter: productProfiles })
   await subscribeAPIS({ consoleClient, orgId, projectId, workspaceId, credentialType, credentialId, servicesInfo })
 }
@@ -131,7 +130,7 @@ const onboardAdobeIdApi = async ({ consoleClient, orgId, projectId, workspaceId,
  * @param {string} params.orgId The ID of the organization the project exists in.
  * @param {string} params.projectId The ID of the project to configure the APIs for.
  * @param {string} params.workspaceId The ID of the workspace to get the credentials for.
- * @returns {string} The credential ID.
+ * @returns {object} An object containing credentialId and credentialType.
  * @throws {Error} If the credentials cannot be retrieved.
  */
 const getFirstWorkspaceCredential = async ({ consoleClient, orgId, projectId, workspaceId }) => {
@@ -140,16 +139,16 @@ const getFirstWorkspaceCredential = async ({ consoleClient, orgId, projectId, wo
 
   // Check for existing credentials, giving preference to OAuth credentials.
   if (oauthCredentialId) {
-    return oauthCredentialId
+    return { credentialId: oauthCredentialId, credentialType: SERVICE_INTEGRATION_TYPE_OAUTH }
   } else if (jwtCredentialId) {
-    return jwtCredentialId
+    return { credentialId: jwtCredentialId, credentialType: SERVICE_TYPE_ENTERPRISE }
   }
 
   // If there is no credential on the workspace, create an OAuth credential.
   const ts = new Date().getTime()
   const credentialNameOAuth = 'cred-oauth' + ts
   const credential = (await consoleClient.createOAuthServerToServerCredential(orgId, projectId, workspaceId, credentialNameOAuth, 'Oauth Credential')).body
-  return credential.id
+  return { credentialId: credential.id, credentialType: SERVICE_INTEGRATION_TYPE_OAUTH }
 }
 
 /**
