@@ -230,4 +230,99 @@ describe('configureAPIs', () => {
       ])
     )
   })
+
+  test('uses OAuth credential type when OAuth credential exists', async () => {
+    const consoleClient = await consoleSDK.init()
+    // Mock credentials to return OAuth credential
+    mockConsoleSDKInstance.getCredentials.mockResolvedValue({ body: dataMocks.integrationsOAuthAndJwt })
+
+    const apis = [
+      {
+        code: 'AssetComputeSDK'
+      }
+    ]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      'oauth_server_to_server', // Should use OAuth credential type
+      '111111', // OAuth credential ID
+      expect.any(Array)
+    )
+  })
+
+  test('uses JWT credential type when only JWT credential exists', async () => {
+    const consoleClient = await consoleSDK.init()
+    // Mock credentials to return only JWT credential (no OAuth)
+    const jwtOnlyCredentials = [
+      {
+        id_integration: '33333',
+        id_workspace: dataMocks.workspace.id,
+        integration_type: 'service',
+        flow_type: 'entp'
+      }
+    ]
+    mockConsoleSDKInstance.getCredentials.mockResolvedValue({ body: jwtOnlyCredentials })
+
+    const apis = [
+      {
+        code: 'AssetComputeSDK'
+      }
+    ]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      'entp', // Should use JWT credential type
+      '33333', // JWT credential ID
+      expect.any(Array)
+    )
+  })
+
+  test('creates OAuth credential and uses OAuth type when no credentials exist', async () => {
+    const consoleClient = await consoleSDK.init()
+    // Mock credentials to return empty array (no existing credentials)
+    mockConsoleSDKInstance.getCredentials.mockResolvedValue({ body: [] })
+
+    const apis = [
+      {
+        code: 'AssetComputeSDK'
+      }
+    ]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    // Should create OAuth credential
+    expect(consoleClient.createOAuthServerToServerCredential).toHaveBeenCalledTimes(1)
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      'oauth_server_to_server', // Should use OAuth credential type
+      dataMocks.integrationCreateResponse.id, // Newly created credential ID
+      expect.any(Array)
+    )
+  })
 })
