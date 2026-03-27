@@ -215,7 +215,7 @@ const getWorkspaceAdobeIdCredentials = async ({ consoleClient, orgId, projectId,
  * @param {Array} params.services A list of services to get the info for.
  * @param {Array} params.productProfilesFilter A list of product profiles to filter by
  * @param {string} params.serviceType The expected service type ('entp' or 'adobeid') used to disambiguate services that appear under multiple types in the org catalog.
- * @returns {object} The services info presented as a map.
+ * @returns {Array} The services info as an array.
  */
 const getServicesInfo = async ({ consoleClient, orgId, services, productProfilesFilter, serviceType }) => {
   const orgServicesWithProductProfiles = (await consoleClient.getServicesForOrg(orgId)).body.filter(s => s.enabled)

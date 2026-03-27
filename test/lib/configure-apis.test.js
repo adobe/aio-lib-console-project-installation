@@ -314,7 +314,7 @@ describe('configureAPIs', () => {
         apis,
         productProfiles
       })
-    ).resolves.not.toThrow()
+    ).resolves.not.toBeDefined()
 
     expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
       dataMocks.project.org_id,
@@ -398,7 +398,7 @@ describe('configureAPIs', () => {
         apis,
         productProfiles
       })
-    ).resolves.not.toThrow()
+    ).resolves.not.toBeDefined()
 
     expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
   })
