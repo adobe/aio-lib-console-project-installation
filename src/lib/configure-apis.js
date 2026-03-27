@@ -102,7 +102,7 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
  */
 const onboardEnterpriseApi = async ({ consoleClient, orgId, projectId, workspaceId, services, productProfiles }) => {
   const { credentialId, credentialType } = await getFirstWorkspaceCredential({ consoleClient, orgId, projectId, workspaceId })
-  const servicesInfo = await getServicesInfo({ consoleClient, orgId, services, productProfilesFilter: productProfiles })
+  const servicesInfo = await getServicesInfo({ consoleClient, orgId, services, productProfilesFilter: productProfiles, serviceType: SERVICE_TYPE_ENTERPRISE })
   await subscribeAPIS({ consoleClient, orgId, projectId, workspaceId, credentialType, credentialId, servicesInfo })
 }
 
@@ -119,7 +119,7 @@ const onboardEnterpriseApi = async ({ consoleClient, orgId, projectId, workspace
 const onboardAdobeIdApi = async ({ consoleClient, orgId, projectId, workspaceId, services }) => {
   const credentialType = SERVICE_TYPE_ADOBEID
   const credentialId = await getWorkspaceAdobeIdCredentials({ consoleClient, orgId, projectId, workspaceId })
-  const servicesInfo = await getServicesInfo({ consoleClient, orgId, services })
+  const servicesInfo = await getServicesInfo({ consoleClient, orgId, services, serviceType: SERVICE_TYPE_ADOBEID })
   await subscribeAPIS({ consoleClient, orgId, projectId, workspaceId, credentialType, credentialId, servicesInfo })
 }
 
@@ -214,18 +214,23 @@ const getWorkspaceAdobeIdCredentials = async ({ consoleClient, orgId, projectId,
  * @param {string} params.orgId The ID of the organization the project exists in.
  * @param {Array} params.services A list of services to get the info for.
  * @param {Array} params.productProfilesFilter A list of product profiles to filter by
+ * @param {string} params.serviceType The expected service type ('entp' or 'adobeid') used to disambiguate services that appear under multiple types in the org catalog.
  * @returns {object} The services info presented as a map.
  */
-const getServicesInfo = async ({ consoleClient, orgId, services, productProfilesFilter }) => {
+const getServicesInfo = async ({ consoleClient, orgId, services, productProfilesFilter, serviceType }) => {
   const orgServicesWithProductProfiles = (await consoleClient.getServicesForOrg(orgId)).body.filter(s => s.enabled)
   const servicesInfo = services.map(serviceCode => {
-    const orgServiceDefinition = orgServicesWithProductProfiles.find(os => os.code === serviceCode)
+    const orgServiceDefinition = orgServicesWithProductProfiles.find(
+      os => os.code === serviceCode && os.type === serviceType
+    )
 
     if (productProfilesFilter && productProfilesFilter.length > 0) {
       const productProfilesFilterForService = productProfilesFilter.find(p => p.sdkCode === serviceCode)?.licenseConfigs
       if (productProfilesFilterForService) {
         const filteredProductProfiles = orgServiceDefinition?.properties?.licenseConfigs?.filter(l => productProfilesFilterForService.find(productProfile => productProfile.id === l.id))
-        orgServiceDefinition.properties.licenseConfigs = filteredProductProfiles
+        if (orgServiceDefinition?.properties != null) {
+          orgServiceDefinition.properties.licenseConfigs = filteredProductProfiles
+        }
       }
     }
 
