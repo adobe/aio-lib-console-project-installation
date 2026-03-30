@@ -295,6 +295,114 @@ describe('configureAPIs', () => {
     )
   })
 
+  test('does not crash when productProfilesFilter targets a service whose org definition has properties: null', async () => {
+    const consoleClient = await consoleSDK.init()
+    // thirdSDK has properties: null in the mock services catalog
+    const apis = [{ code: 'thirdSDK' }]
+    const productProfiles = [
+      {
+        sdkCode: 'thirdSDK',
+        licenseConfigs: [{ id: '9999999', name: 'some config', productId: 'ZZZZZ' }]
+      }
+    ]
+
+    await expect(
+      configureAPIs({
+        consoleClient,
+        orgId: dataMocks.project.org_id,
+        projectId: dataMocks.project.id,
+        apis,
+        productProfiles
+      })
+    ).resolves.not.toBeDefined()
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      dataMocks.integration.type,
+      dataMocks.integration.id,
+      expect.arrayContaining([
+        expect.objectContaining({ sdkCode: 'thirdSDK', licenseConfigs: null })
+      ])
+    )
+  })
+
+  test('enterprise path selects the entp row when a service code appears under both adobeid and entp in the org catalog', async () => {
+    const consoleClient = await consoleSDK.init()
+
+    // Catalog where dualTypeSDK appears as adobeid first (properties: null) and entp second (has licenseConfigs).
+    // Without the type-scoped find, the adobeid row would be selected and the licenseConfigs would be lost.
+    const dualTypeCatalog = [
+      {
+        name: 'Dual Type SDK',
+        code: 'dualTypeSDK',
+        enabled: true,
+        type: 'adobeid',
+        properties: null,
+        requiresApproval: false
+      },
+      {
+        name: 'Dual Type SDK',
+        code: 'dualTypeSDK',
+        enabled: true,
+        type: 'entp',
+        properties: {
+          roles: null,
+          licenseConfigs: [{ id: '1111111', name: 'entp config', productId: 'ENTP_PRODUCT', description: null }]
+        },
+        requiresApproval: false
+      }
+    ]
+    mockConsoleSDKInstance.getServicesForOrg.mockResolvedValue({ body: dualTypeCatalog })
+
+    const apis = [{ code: 'dualTypeSDK' }]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    // The entp row carries licenseConfigs — the subscription must include them.
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      dataMocks.integration.type,
+      dataMocks.integration.id,
+      expect.arrayContaining([
+        expect.objectContaining({
+          sdkCode: 'dualTypeSDK',
+          licenseConfigs: [{ op: 'add', id: '1111111', productId: 'ENTP_PRODUCT' }]
+        })
+      ])
+    )
+  })
+
+  test('does not crash when productProfilesFilter contains a service code absent from the org catalog', async () => {
+    const consoleClient = await consoleSDK.init()
+    const apis = [{ code: 'AssetComputeSDK' }]
+    const productProfiles = [
+      {
+        sdkCode: 'NonExistentSDK',
+        licenseConfigs: [{ id: '0000000', name: 'ghost config', productId: 'GHOST' }]
+      }
+    ]
+
+    await expect(
+      configureAPIs({
+        consoleClient,
+        orgId: dataMocks.project.org_id,
+        projectId: dataMocks.project.id,
+        apis,
+        productProfiles
+      })
+    ).resolves.not.toBeDefined()
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
+  })
+
   test('creates OAuth credential and uses OAuth type when no credentials exist', async () => {
     const consoleClient = await consoleSDK.init()
     // Mock credentials to return empty array (no existing credentials)
