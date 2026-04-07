@@ -1,82 +1,82 @@
 {
-    "name": "@adobe/aio-lib-console-project-installation",
-    "version": "3.1.1",
-    "description": "A library to configure Adobe Console Projects from a file.",
-    "scripts": {
-        "test": "npm run lint:check && jest --ci",
-        "lint:check": "eslint --ext .js .",
-        "lint:fix": "eslint --ext .js --fix .",
-        "jsdoc": "jsdoc2md -t ./docs/readme_template.md src/index.js > README.md"
+  "name": "@adobe/aio-lib-console-project-installation",
+  "version": "3.1.1",
+  "description": "A library to configure Adobe Console Projects from a file.",
+  "scripts": {
+    "test": "npm run lint:check && jest --ci",
+    "lint:check": "eslint --ext .js .",
+    "lint:fix": "eslint --ext .js --fix .",
+    "jsdoc": "jsdoc2md -t ./docs/readme_template.md src/index.js > README.md"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adobe/aio-lib-console-project-installation.git"
+  },
+  "author": "Adobe Inc.",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/adobe/aio-lib-console-project-installation/issues"
+  },
+  "homepage": "https://github.com/adobe/aio-lib-console-project-installation",
+  "dependencies": {
+    "@adobe/aio-cli-plugin-certificate": "^2",
+    "@adobe/aio-lib-console": "^5",
+    "@adobe/aio-lib-core-logging": "^3",
+    "@adobe/aio-lib-env": "^3",
+    "@adobe/aio-lib-ims": "^7",
+    "ajv": "^8.11.0",
+    "better-ajv-errors": "^1.2.0",
+    "fs-extra": "^10.1.0",
+    "hjson": "^3.2.2",
+    "js-yaml": "^4.1.0",
+    "tmp": "^0.2.1"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@adobe/eslint-config-aio-lib-config": "^4.0.0",
+    "@jest/globals": "^28.1.1",
+    "eslint": "^8.57.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^27.9.0",
+    "eslint-plugin-jsdoc": "^48.11.0",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.6.0",
+    "jest": "^29.5.0",
+    "jest-junit": "^16.0.0",
+    "jsdoc": "^3.6.10",
+    "jsdoc-to-markdown": "^7.1.1",
+    "nock": "^13.2.6",
+    "typescript": "^5.3.3"
+  },
+  "main": "src/index.js",
+  "jest": {
+    "rootDir": ".",
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "lines": 100,
+        "statements": 100,
+        "functions": 100
+      }
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/adobe/aio-lib-console-project-installation.git"
-    },
-    "author": "Adobe Inc.",
-    "license": "Apache-2.0",
-    "bugs": {
-        "url": "https://github.com/adobe/aio-lib-console-project-installation/issues"
-    },
-    "homepage": "https://github.com/adobe/aio-lib-console-project-installation",
-    "dependencies": {
-        "@adobe/aio-cli-plugin-certificate": "^2",
-        "@adobe/aio-lib-console": "^5",
-        "@adobe/aio-lib-core-logging": "^3",
-        "@adobe/aio-lib-env": "^3",
-        "@adobe/aio-lib-ims": "^7",
-        "ajv": "^8.11.0",
-        "better-ajv-errors": "^1.2.0",
-        "fs-extra": "^10.1.0",
-        "hjson": "^3.2.2",
-        "js-yaml": "^4.1.0",
-        "tmp": "^0.2.1"
-    },
-    "engines": {
-        "node": ">=18"
-    },
-    "devDependencies": {
-        "@adobe/eslint-config-aio-lib-config": "^4.0.0",
-        "@jest/globals": "^28.1.1",
-        "eslint": "^8.57.1",
-        "eslint-config-standard": "^17.1.0",
-        "eslint-plugin-import": "^2.31.0",
-        "eslint-plugin-jest": "^27.9.0",
-        "eslint-plugin-jsdoc": "^48.11.0",
-        "eslint-plugin-n": "^15.7.0",
-        "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-promise": "^6.6.0",
-        "jest": "^29.5.0",
-        "jest-junit": "^16.0.0",
-        "jsdoc": "^3.6.10",
-        "jsdoc-to-markdown": "^7.1.1",
-        "nock": "^13.2.6",
-        "typescript": "^5.3.3"
-    },
-    "main": "src/index.js",
-    "jest": {
-        "rootDir": ".",
-        "coverageThreshold": {
-            "global": {
-                "branches": 100,
-                "lines": 100,
-                "statements": 100,
-                "functions": 100
-            }
-        },
-        "collectCoverage": true,
-        "testPathIgnorePatterns": [
-            "<rootDir>/test/fixtures/"
-        ],
-        "coveragePathIgnorePatterns": [
-            "<rootDir>/test/fixtures/"
-        ],
-        "reporters": [
-            "default",
-            "jest-junit"
-        ],
-        "testEnvironment": "node",
-        "setupFilesAfterEnv": [
-            "./test/jest.setup.js"
-        ]
-    }
+    "collectCoverage": true,
+    "testPathIgnorePatterns": [
+      "<rootDir>/test/fixtures/"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/test/fixtures/"
+    ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./test/jest.setup.js"
+    ]
+  }
 }
