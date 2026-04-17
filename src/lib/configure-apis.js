@@ -71,6 +71,8 @@ const configureAPIs = async ({ consoleClient, orgId, projectId, apis, productPro
             }
           }
         }
+      } else if (api.optional) {
+        logger.warn(`Optional service "${api.code}" not found in the organization, skipping.`)
       } else {
         const errorMessage = `Service code "${api.code}" with one of the following types ${SUPPORTED_SERVICE_TYPES.join(',')} not found in the organization.`
         logger.error(errorMessage)

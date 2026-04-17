@@ -403,6 +403,108 @@ describe('configureAPIs', () => {
     expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
   })
 
+  test('skips optional API when service code is not found in the org', async () => {
+    const consoleClient = await consoleSDK.init()
+    const apis = [
+      {
+        code: 'AssetComputeSDK'
+      },
+      {
+        code: 'NonExistentService',
+        optional: true
+      }
+    ]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      dataMocks.integration.type,
+      dataMocks.integration.id,
+      expect.arrayContaining([
+        expect.objectContaining({
+          sdkCode: 'AssetComputeSDK'
+        })
+      ])
+    )
+  })
+
+  test('still throws for required API when service code is not found in the org', async () => {
+    const consoleClient = await consoleSDK.init()
+    const apis = [
+      {
+        code: 'NonExistentService'
+      }
+    ]
+    await expect(
+      configureAPIs({
+        consoleClient,
+        orgId: dataMocks.project.org_id,
+        projectId: dataMocks.project.id,
+        apis
+      })
+    ).rejects.toThrow('Service code "NonExistentService"')
+  })
+
+  test('skips all APIs when all are optional and none are found', async () => {
+    const consoleClient = await consoleSDK.init()
+    const apis = [
+      {
+        code: 'NonExistentA',
+        optional: true
+      },
+      {
+        code: 'NonExistentB',
+        optional: true
+      }
+    ]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    expect(consoleClient.subscribeCredentialToServices).not.toHaveBeenCalled()
+  })
+
+  test('associates optional API when service code IS found in the org', async () => {
+    const consoleClient = await consoleSDK.init()
+    const apis = [
+      {
+        code: 'AssetComputeSDK',
+        optional: true
+      }
+    ]
+    await configureAPIs({
+      consoleClient,
+      orgId: dataMocks.project.org_id,
+      projectId: dataMocks.project.id,
+      apis
+    })
+
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledTimes(1)
+    expect(consoleClient.subscribeCredentialToServices).toHaveBeenCalledWith(
+      dataMocks.project.org_id,
+      dataMocks.project.id,
+      dataMocks.workspaces[0].id,
+      dataMocks.integration.type,
+      dataMocks.integration.id,
+      expect.arrayContaining([
+        expect.objectContaining({
+          sdkCode: 'AssetComputeSDK'
+        })
+      ])
+    )
+  })
+
   test('creates OAuth credential and uses OAuth type when no credentials exist', async () => {
     const consoleClient = await consoleSDK.init()
     // Mock credentials to return empty array (no existing credentials)
