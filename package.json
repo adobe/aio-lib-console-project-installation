@@ -23,7 +23,6 @@
     "@adobe/aio-lib-console": "^5",
     "@adobe/aio-lib-core-logging": "^3",
     "@adobe/aio-lib-env": "^3",
-    "@adobe/aio-lib-ims": "^7",
     "ajv": "^8.11.0",
     "better-ajv-errors": "^1.2.0",
     "fs-extra": "^10.1.0",
@@ -35,6 +34,7 @@
     "node": ">=20"
   },
   "devDependencies": {
+    "@adobe/aio-lib-ims": "^8",
     "@adobe/eslint-config-aio-lib-config": "^4.0.0",
     "@jest/globals": "^28.1.1",
     "eslint": "^8.57.1",

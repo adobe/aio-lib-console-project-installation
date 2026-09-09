@@ -40,7 +40,8 @@
       "error",
       {
         "allowModules": [
-          "@jest/globals"
+          "@jest/globals",
+          "@adobe/aio-lib-ims"
         ]
       }
     ]
